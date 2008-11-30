@@ -6,7 +6,6 @@ private:
 	string nome;
 	fstream f;
 	Registro r;
-	char a[2];
 public:
 	Arquivo(string filename)
 	{
