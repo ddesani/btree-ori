@@ -22,11 +22,23 @@ public:
 		}
 	}
 	
+	int getRA(int posicao)
+	{
+		f.seekg(posicao,ios::beg);
+		f.getline(reinterpret_cast<char *>(&r), 242);
+		return r.getRA();
+	}
+	
+	void imprime(int posicao)
+	{
+		f.seekg(posicao,ios::beg);
+		f.getline(reinterpret_cast<char *>(&r), 242);
+		r.imprime();
+	}
+	
 	int getPosicao()
 	{
 		return f.tellg();
 	}
 	
-	
-
 };
