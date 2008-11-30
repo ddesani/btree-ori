@@ -12,14 +12,25 @@ public:
 
 		nome = filename;
 		f.open(nome.c_str());
-		for (int i = 0; i < 100; ++i)
-		{
-			f.getline(reinterpret_cast<char *>(&r), 242);
-			cout << r.getRA();
-			r.imprime();
-			cout << endl;
-		}
+		
+		f.seekg(99*242,ios::beg);
+		f.getline(reinterpret_cast<char *>(&r), 242);
+		r.init(); //str = nome
+		r.ajustaI();
+		r.imprime();
+		f.clear();
+		f << '\n';
+		f.write(r.getStr(),241);
+		//f << '\n';
+		
+		
 	}
+	
+	void setEnd(int endereco)
+	{
+		
+	}
+	
 	
 	int getRA(int posicao)
 	{
