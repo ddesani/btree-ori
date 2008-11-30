@@ -2,28 +2,6 @@
 #include <fstream>
 using namespace std;
 
-typedef struct registro
-{
-    char nome[40];
-    char RG[10];
-    char CPF[12];
-    char RA[7];
-    char cidade[20];
-    char rua[35];
-    char numero[5];
-    char CEP[9];
-    char UF[3];
-    char telefone[11];
-    char rua2[35];
-    char numero2[5];
-    char CEP2[9];
-    char telefone2[11];
-    char curso[25];
-    char anoIngresso[4];
-
-};
-
-
 
 #include "src/Registro.h"
 #include "src/Arquivo.h"
@@ -31,9 +9,6 @@ typedef struct registro
 
 int main()
 {
-
-    //ifstream f("registro.txt");
-   // registro r;
     Arquivo objArq("registro.txt");
    
     /*char nome[242];
@@ -58,32 +33,7 @@ int main()
       dim[14]= 25;
       dim[15]= 4;*/
 
-      //f.seekg(456, ios::beg);
-      //f.seekg(637, ios::beg);
-      //f.seekg(sizeof(r),ios::cur);
-      //f.seekg(7*242);
-      //f.read(reinterpret_cast<char *> (&r), sizeof(r));
-      /*f.getline(reinterpret_cast<char *> (&r),242,'\n');
-       
-      cout << "registro" << endl;
-      for (int i = 0; i < 1; ++i)
-      {
-          cout << r.RA;
-      }
-     
-      f.getline(reinterpret_cast<char *> (&r),242,'\n');
-
-      cout << "registro2" << endl;
-      for (int i = 0; i < 1; ++i)
-      {
-          cout << r.RA;
-
-      }
-
-     
-     
-     
-      f.close();*/
+      
 
       cout << endl <<  "Fim" << endl;
       return 0;
