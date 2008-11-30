@@ -12,6 +12,7 @@ class Arquivo
 			nome = filename;
 			f.open(nome.c_str());
 			f.getline(reinterpret_cast<char *>(&r),242,'\n');
+			//r.setNome();
 			r.imprime();
 		}
 		

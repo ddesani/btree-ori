@@ -27,12 +27,24 @@ public:
 		return atoi(RA);
 	}
 	
+	char* ajusta(char* var, int n)
+	{
+		char* aux = new char [n];
+		
+		for(int i=0; i<n-1; ++i)
+			aux[i] = var[i];
+		
+		strcpy(var,aux);
+		
+		free(aux);
+		return var;
+	}
 	
 	void imprime()
 	{
 		cout << endl;
 		cout << "Registro de Alunos" << endl;
-		cout << "Nome: " << nome << endl;
+		cout << "Nome: " << ajusta(nome,40) << endl;
 		cout << "RG: " << RG << endl;
 		cout << "CPF: " << CPF << endl;
 		cout << "RA: " << RA << endl;
@@ -50,4 +62,3 @@ public:
 		cout << "Ano Ingresso: " << anoIngresso << endl;
 	}
 };
-
