@@ -16,26 +16,6 @@ class Arquivo
 			r.imprime();
 		}
 		
-		/*string getRA()
-		{
-			char ra[7];
-			
-			//f.seekg(0,ios::beg);
-			
-			for(int i=0; i<7; ++i)
-				ra[i] = r.RA[i];
-			
-			string teste(ra); //converte char para string
-			
-			
-			return teste.substr(0,7);
-		}*/
-		
-		/*char getEndereco()
-		{
-			return;
-		}
-		*/
 		
 		
 		
