@@ -22,21 +22,25 @@ public:
 	
 		
 public:
-	int getRA()
+	int getRA(char* ra, int n)
 	{
-		return atoi(RA);
+		return atoi(ajusta(ra,7));
 	}
 	
 	char* ajusta(char* var, int n)
 	{
-		char* aux = new char [n];
+		char* aux = new char [n-1];
+		
+		for(int i=0; i<n; ++i)
+			aux[i] = '\0';
 		
 		for(int i=0; i<n-1; ++i)
 			aux[i] = var[i];
 		
 		strcpy(var,aux);
 		
-		free(aux);
+		delete[] aux;
+
 		return var;
 	}
 	
@@ -45,20 +49,20 @@ public:
 		cout << endl;
 		cout << "Registro de Alunos" << endl;
 		cout << "Nome: " << ajusta(nome,40) << endl;
-		cout << "RG: " << RG << endl;
-		cout << "CPF: " << CPF << endl;
-		cout << "RA: " << RA << endl;
-		cout << "Cidade: " << cidade << endl;
-		cout << "Rua: " << rua << endl;
-		cout << "Numero: " << numero << endl;
-		cout << "CEP: " << CEP << endl;
-		cout << "UF: " << UF << endl;
-		cout << "Telefone: " << telefone << endl;
-		cout << "Rua S: " << rua2 << endl;
-		cout << "Numero S: " << numero2 << endl;
-		cout << "CEP S: " << CEP2 << endl;
-		cout << "Telefone S: " << telefone2 << endl;
-		cout << "Curso: " << curso << endl;
+		cout << "RG: " << ajusta(RG,10) << endl;
+		cout << "CPF: " << ajusta(CPF,12) << endl;
+		cout << "RA: " << ajusta(RA,7) << endl;
+		cout << "Cidade: " << ajusta(cidade,20) << endl;
+		cout << "Rua: " << ajusta(rua,25) << endl;
+		cout << "Numero: " << ajusta(numero,5) << endl;
+		cout << "CEP: " << ajusta(CEP,9) << endl;
+		cout << "UF: " << ajusta(UF,3) << endl;
+		cout << "Telefone: " << ajusta(telefone,11) << endl;
+		cout << "Rua S: " << ajusta(rua2,35) << endl;
+		cout << "Numero S: " << ajusta(numero2,5) << endl;
+		cout << "CEP S: " << ajusta(CEP2,9) << endl;
+		cout << "Telefone S: " << ajusta(telefone2,11) << endl;
+		cout << "Curso: " << ajusta(curso,25) << endl;
 		cout << "Ano Ingresso: " << anoIngresso << endl;
 	}
 };
