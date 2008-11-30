@@ -64,5 +64,6 @@ public:
 		cout << "Telefone S: " << ajusta(telefone2,11) << endl;
 		cout << "Curso: " << ajusta(curso,25) << endl;
 		cout << "Ano Ingresso: " << anoIngresso << endl;
+		cout << endl;
 	}
 };
