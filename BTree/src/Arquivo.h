@@ -12,7 +12,7 @@ public:
 	{
 
 		nome = filename;
-		f.open(nome.c_str(), ios::in | ios::out | ios::binary);
+		f.open(nome.c_str());
 		for (int i = 0; i < 100; ++i)
 		{
 			f.getline(reinterpret_cast<char *>(&r), 242);
@@ -20,8 +20,13 @@ public:
 			r.imprime();
 			cout << endl;
 		}
-
-
 	}
+	
+	int getPosicao()
+	{
+		return f.tellg();
+	}
+	
+	
 
 };
