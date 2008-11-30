@@ -23,19 +23,20 @@ typedef struct registro
 
 };
 
-typedef struct registro2
-{
-    char nome[241];
 
-};
+
+#include "src/Registro.h"
+#include "src/Arquivo.h"
+
 
 int main()
 {
 
-    ifstream f("registro.txt");
-    registro r;
+    //ifstream f("registro.txt");
+   // registro r;
+    Arquivo objArq("registro.txt");
    
-    char nome[242];
+    /*char nome[242];
 
      
 
@@ -55,14 +56,14 @@ int main()
       dim[12]= 9;
       dim[13]= 11;
       dim[14]= 25;
-      dim[15]= 4;
+      dim[15]= 4;*/
 
       //f.seekg(456, ios::beg);
       //f.seekg(637, ios::beg);
       //f.seekg(sizeof(r),ios::cur);
       //f.seekg(7*242);
       //f.read(reinterpret_cast<char *> (&r), sizeof(r));
-      f.getline(reinterpret_cast<char *> (&r),242,'\n');
+      /*f.getline(reinterpret_cast<char *> (&r),242,'\n');
        
       cout << "registro" << endl;
       for (int i = 0; i < 1; ++i)
@@ -82,7 +83,7 @@ int main()
      
      
      
-      f.close();
+      f.close();*/
 
       cout << endl <<  "Fim" << endl;
       return 0;
