@@ -13,17 +13,12 @@ public:
 		nome = filename;
 		f.open(nome.c_str());
 		
-		f.seekg(99*242,ios::beg);
+		f.seekg(0*242,ios::beg);
 		f.getline(reinterpret_cast<char *>(&r), 242);
-		r.init(); //str = nome
-		r.ajustaI();
-		r.imprime();
-		f.clear();
-		f << '\n';
-		f.write(r.getStr(),241);
-		//f << '\n';
-		
-		
+		f.seekg(100*242,ios::beg);
+		f.write(reinterpret_cast<char *>(&r), 242);
+		f << '\xA';
+				
 	}
 	
 	void setEnd(int endereco)

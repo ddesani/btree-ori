@@ -19,7 +19,6 @@ public:
 	char telefone2[11];
 	char curso[25];
 	char anoIngresso[4];
-	//char	reg[232];
 
 
 	int getRA()
@@ -27,52 +26,25 @@ public:
 		return atoi(RA);
 	}
 
-	void ajustaI()
+	void ajusta()
 	{
-		ajustaI(nome, 40);
-		ajustaI(RG, 10);
-		ajustaI(CPF, 12);
-		ajustaI(RA, 7);
-		ajustaI(cidade, 20);
-		ajustaI(rua, 25);
-		ajustaI(numero, 5);
-		ajustaI(CEP, 9);
-		ajustaI(UF, 3);
-		ajustaI(telefone, 11);
-		ajustaI(rua2, 35);
-		ajustaI(numero2, 5);
-		ajustaI(CEP2, 9);
-		ajustaI(telefone2, 11);
-		ajustaI(curso, 25);
-		ajustaI(anoIngresso, 5);
-		str[0]=nome[0];
+		ajusta(nome, 40);
+		ajusta(RG, 10);
+		ajusta(CPF, 12);
+		ajusta(RA, 7);
+		ajusta(cidade, 20);
+		ajusta(rua, 25);
+		ajusta(numero, 5);
+		ajusta(CEP, 9);
+		ajusta(UF, 3);
+		ajusta(telefone, 11);
+		ajusta(rua2, 35);
+		ajusta(numero2, 5);
+		ajusta(CEP2, 9);
+		ajusta(telefone2, 11);
+		ajusta(curso, 25);
+		ajusta(anoIngresso, 5);
 
-	}
-	void init()
-	{
-		strncat(str,nome,40);
-		strncat(str,RG,10);
-		strncat(str,CPF,12);
-		strncat(str,RA,7);
-		strncat(str,cidade,20);
-		strncat(str,rua,35);
-		strncat(str,numero,5);
-		strncat(str,CEP,9);
-		strncat(str,UF,3);
-		strncat(str,telefone,11);
-		strncat(str,rua2,35);
-		strncat(str,numero2,5);
-		strncat(str,CEP2,9);
-		strncat(str,telefone2,11);
-		strncat(str,curso,25);
-		strncat(str,anoIngresso,4);
-		str[241]='\n';
-		
-	}
-	
-	char*	getStr()
-	{
-		return str;
 	}
 
 	/*void imprime()
@@ -122,9 +94,8 @@ public:
 
 private:
 
-	char	str[242];
 	
-	char* ajustaI(char* var, int n)
+	char* ajusta(char* var, int n)
 	{
 		char* aux = new char [n-1];
 
