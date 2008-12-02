@@ -2,8 +2,9 @@
 #include <fstream>
 using namespace std;
 
-#include "src/Arquivo.h"
 #include "src/Registro.h"
+#include "src/CabecalhoArquivo.h"
+#include "src/Arquivo.h"
 #include "src/ArvoreB.h"
 
 int main()
@@ -20,6 +21,10 @@ int main()
 
 	arvore.mostrar();
 */
+	
+	Arquivo a("registro.txt");
+	
+	a.manipCabecalho();
 
 	cout << endl << "Fim " << endl;
 	return 0;
