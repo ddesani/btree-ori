@@ -18,7 +18,7 @@ public:
 	char numero2[5];
 	char CEP2[9];
 	char telefone2[11];
-	char curso[25];	
+	char curso[25];
 	char anoIngresso[4];
 	
 	//variaveis que gardam o tamanho dos char do registro
@@ -85,28 +85,6 @@ public:
 
 	}
 
-	/*void imprime()
-	{
-		cout << endl;
-		cout << "Registro de Alunos" << endl;
-		cout << "Nome: " << ajustaI(nome, 40) << endl;
-		cout << "RG: " << ajustaI(RG, 10) << endl;
-		cout << "CPF: " << ajustaI(CPF, 12) << endl;
-		cout << "RA: " << ajustaI(RA, 7) << endl;
-		cout << "Cidade: " << ajustaI(cidade, 20) << endl;
-		cout << "Rua: " << ajustaI(rua, 25) << endl;
-		cout << "Numero: " << ajustaI(numero, 5) << endl;
-		cout << "CEP: " << ajustaI(CEP, 9) << endl;
-		cout << "UF: " << ajustaI(UF, 3) << endl;
-		cout << "Telefone: " << ajustaI(telefone, 11) << endl;
-		cout << "Rua S: " << ajustaI(rua2, 35) << endl;
-		cout << "Numero S: " << ajustaI(numero2, 5) << endl;
-		cout << "CEP S: " << ajustaI(CEP2, 9) << endl;
-		cout << "Telefone S: " << ajustaI(telefone2, 11) << endl;
-		cout << "Curso: " << ajustaI(curso, 25) << endl;
-		cout << "Ano Ingresso: " << ajustaI(anoIngresso, 5) << endl;
-		cout << endl;
-	}*/
 	void imprime()
 	{
 		cout << endl;
