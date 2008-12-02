@@ -3,6 +3,7 @@ using namespace std;
 class Registro
 {
 public:
+	//variaveis char do registro
 	char nome[40];
 	char RG[10];
 	char CPF[12];
@@ -17,9 +18,46 @@ public:
 	char numero2[5];
 	char CEP2[9];
 	char telefone2[11];
-	char curso[25];
+	char curso[25];	
 	char anoIngresso[4];
+	
+	//variaveis que gardam o tamanho dos char do registro
+	int tamanhoNome;
+	int tamanhoRG;
+	int tamanhoCPF;
+	int tamanhoRA;
+	int tamanhoCidade;
+	int tamanhoRua;
+	int tamanhoNumero;
+	int tamanhoCEP;
+	int tamanhoUF;
+	int tamanhoTelefone;
+	int tamanhoRua2;
+	int tamanhoNumero2;
+	int tamanhoCEP2;
+	int tamanhoTelefone2;
+	int tamanhoCurso;
+	int tamanhoAnoIngresso;
 
+	Registro() {
+		//inicializa as variaveis tamanho
+		tamanhoNome = 40;
+		tamanhoRG = 10;
+		tamanhoCPF = 12;
+		tamanhoRA = 7;
+		tamanhoCidade = 20;
+		tamanhoRua = 35;
+		tamanhoNumero = 5;
+		tamanhoCEP = 9;
+		tamanhoUF = 3;
+		tamanhoTelefone = 11;
+		tamanhoRua2 = 35;
+		tamanhoNumero2 = 5;
+		tamanhoCEP2 = 9;
+		tamanhoTelefone2 = 11;
+		tamanhoCurso = 25;
+		tamanhoAnoIngresso = 4;
+	}
 
 	int getRA()
 	{
