@@ -6,11 +6,17 @@ private:
 	string nome;
 	fstream f;
 	Registro r;
+	CabecalhoArquivo a;
 public:
 	Arquivo(string filename)
 	{
 		nome = filename;
 		f.open(nome.c_str());
+	}
+	
+	~Arquivo()
+	{
+		f.close();
 	}
 
 	//insere espacos vazios no fim de cada variavel char
@@ -168,9 +174,19 @@ public:
 		r.imprime();
 	}
 
+	//retorna posicao do arquivo
 	int getPosicao()
 	{
 		return f.tellg();
 	}
+	
+	void manipCabecalho()
+	{
+		f.seekg(0,ios::beg);
+		//f << "teste";
+		f.write(a.getIdentificacao(),sizeof(char));
+	}
+	
+	
 
 };
