@@ -1,3 +1,4 @@
+
 using namespace std;
 
 class Arquivo
@@ -7,6 +8,15 @@ private:
 	fstream f;
 	Registro r;
 	CabecalhoArquivo a;
+	
+	void insereArq(int n, char *registro){
+			//insere na ultima linha do arquivo
+			f.seekg(n*sizeof(registro), ios::beg);
+			f.clear();
+			f.write(registro, 242);
+	}
+	
+			
 public:
 	Arquivo(string filename)
 	{
@@ -149,6 +159,8 @@ public:
 		f.write(registro, 242);
 
 	}
+	
+	
 
 	/*void escreve()
 	 {
@@ -180,11 +192,56 @@ public:
 		return f.tellg();
 	}
 	
+	//metodo que converte inteiro para char
+	const char* intToChar(int endereco)
+	{
+		stringstream out;
+		string s;//string que recebera o int convertido
+		const char *caracter; //char que recebera a string convertida
+		
+		
+		//converte inteiro para string
+		out << endereco;
+		s = out.str();
+		
+		//converte string para char
+		caracter = s.c_str();
+		
+		return caracter;
+		
+	}
+	
+	
 	void manipCabecalho()
 	{
-		f.seekg(0,ios::beg);
-		//f << "teste";
-		f.write(a.getIdentificacao(),sizeof(char));
+		/*char cabecalho[242];
+		char *aux;
+		
+		char *end;
+		strcpy(end, intToChar(a.getEnderecoArquivo()));
+		
+		
+		strcpy(cabecalho, a.getIdentificacao());
+		strcat(cabecalho, " ");
+		strcat(cabecalho, end);
+		strcat(cabecalho, " ");
+		strcat(cabecalho, intToChar(a.getEnderecoDisp()));
+		
+				
+		
+		aux = insereEspaco(cabecalho, 200);
+		strcpy(cabecalho, aux);
+		cabecalho[241] = '\xA';
+		
+		insereArq(0, cabecalho);*/
+		
+		f.clear();
+		f << a.getIdentificacao();
+		f << '\n';
+		f << a.getEnderecoArquivo();
+		//f << intToChar(a.getEnderecoDisp());
+		
+		
 	}
 	
 	
