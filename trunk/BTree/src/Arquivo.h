@@ -9,44 +9,35 @@ private:
 public:
 	Arquivo(string filename)
 	{
-
 		nome = filename;
 		f.open(nome.c_str());
-		
-		f.seekg(0*242,ios::beg);
-		f.getline(reinterpret_cast<char *>(&r), 242);
-		r.ajusta();
-		r.imprime();
-		//f.seekg(100*242,ios::beg);
-		//f.write(reinterpret_cast<char *>(&r), 242);
-		//f << '\xA';
-				
 	}
-	
-	
+
 	//insere espacos vazios no fim de cada variavel char
-	char* insereEspaco(char *a, int tamanho) {
+	char* insereEspaco(char *a, int tamanho)
+	{
 		char *aux = new char[tamanho];
-		int i = 0;		
-		while (a[i] != '\0' && i != tamanho - 1) {
+		int i = 0;
+		while (a[i] != '\0' && i != tamanho - 1)
+		{
 			aux[i] = a[i];
 			++i;
 		}
 		while (i < tamanho - 1)
 			aux[i++] = ' ';
-		
-		aux[i] = '\0';	
+
+		aux[i] = '\0';
 		return aux;
 	}
-	
+
 	void inserirArq(int n)
 	{
 		//Tipo registro que auxilia com as variaveis para formar o vetor de char do registro
-		Registro reg; 
-		
+		Registro reg;
+
 		//Registro final com todos os campos
 		char registro[242];
-		
+
 		//nome
 		cout << "Nome: ";
 		cin >> reg.nome;
@@ -144,50 +135,42 @@ public:
 		strcat(registro, aux);
 
 		//coloca o xA no fim registro ao inves do \0
-		registro[241] = '\xA'; 
-		
+		registro[241] = '\xA';
+
 		//insere na ultima linha do arquivo
 		f.seekg(n*sizeof(registro), ios::beg);
 		f.clear();
-		f.write(registro, 242);		
-			
+		f.write(registro, 242);
+
 	}
-	
+
 	/*void escreve()
-	{
-		busca na fila posicao livre
-		f.clear();
-		f.seekg(posicao,ios::beg);
-		f.write(nome, sizeof(Registro));
-		
-	}
-	*/
-	
-	
-	
-	void setEnd(int endereco)
-	{
-		
-	}
-	
-	
+	 {
+	 busca na fila posicao livre
+	 f.clear();
+	 f.seekg(posicao,ios::beg);
+	 f.write(nome, sizeof(Registro));
+	 
+	 }
+	 */
+
 	int getRA(int posicao)
 	{
-		f.seekg(posicao,ios::beg);
+		f.seekg(posicao, ios::beg);
 		f.getline(reinterpret_cast<char *>(&r), 242);
 		return r.getRA();
 	}
-	
+
 	void imprime(int posicao)
 	{
-		f.seekg(posicao,ios::beg);
+		f.seekg(posicao, ios::beg);
 		f.getline(reinterpret_cast<char *>(&r), 242);
 		r.imprime();
 	}
-	
+
 	int getPosicao()
 	{
 		return f.tellg();
 	}
-	
+
 };
