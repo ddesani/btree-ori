@@ -40,9 +40,9 @@ class CabecalhoArquivo
 			return enderecoArquivo;
 		}
 		
-		char* getIdentificacao()
+		char getIdentificacao()
 		{
-			return &identificacao;
+			return identificacao;
 		}
 		
 		
