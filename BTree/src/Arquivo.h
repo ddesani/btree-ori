@@ -229,6 +229,7 @@ public:
 	{
 		char *end = new char[100];
 		end = intToChar(endereco);
+		
 		f.seekg(40, ios::beg);
 		f.write(end, sizeof(end));
 	}
@@ -259,6 +260,31 @@ public:
 			f.write(limpo, 242);
 			escreverCabecalhoDisp(endereco);
 			return 1;
+	}
+	
+	//metodo para leitura do campo que indica que um registro foi removido.
+	char* lerCampo(char *endereco)
+	{
+		char *campo = new char[100];
+		int end;
+		end = atoi(endereco);
+		
+		f.seekg(end+1,ios::beg);
+		
+		f.read(campo,241);
+		
+		int i = 0;
+		//char *valor = new char[100];
+		
+		while(campo[i] != ' ')
+			++i;
+		
+		strncpy(campo,campo,i);
+		campo[i] = '\0'; 
+		
+		cout << campo << endl;
+		
+		return campo;
 	}
 	
 	

@@ -25,9 +25,14 @@ int main()
 	
 	Arquivo a("registro.txt");
 	
-	//a.escreverCabecalhoDisp(11111);
+//	a.escreverCabecalhoDisp(11111);
+	/*int x = 968;
+	char *j = new char[100];
+	j = a.intToChar(x);
 	
-	a.removerRegistro(242*4);
+	a.lerCampo(j);*/
+	
+	a.removerRegistro(242*6);
 	/*unsigned long x;
 	char y[11] = {'1','1','1','1','1','1','1','1','1','1','1'};
 	
