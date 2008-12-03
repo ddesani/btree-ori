@@ -31,6 +31,9 @@ public:
 
 		_raiz = 0;
 		
+		//cout << getRaN(8,0);
+		
+		carregaNo(8);
 		
 	}
 	Btree()
@@ -192,7 +195,6 @@ public:
 		fB.seekp(posicao, ios::beg);
 		fB << nChavesN;
 
-		return nChavesN;
 	}
 	
 	
@@ -422,17 +424,18 @@ public:
 			
 			
 			aux.nChaves = getNumeroChavesN(posicao);
-			for(int i=0; i<aux.nChaves; ++i)
+			for(int i=0; i<nChaves; ++i)
 				aux.chave[i].valor = getRaN(posicao,i);
 			
-			for(int i=0; i<aux.nChaves; ++i)
-				aux.chave[i].registro = getEndN(posicao,i);
+			for(int j=0; j<nChaves; ++j)
+				aux.chave[j].registro = getEndN(posicao,j);
 			
 			aux.set_pai(getPaiN(posicao)); 
 			
-			for(int i=0; i<aux.nChaves+1; ++i);
-				//aux.set_filho(getFilhoN(posicao,i),i);
+			for(int k=0; k<nChaves+1; ++k)
+				aux.set_filho(getFilhoN(posicao,k),k);
 		}
+		
 		
 		return	aux;
 	}
