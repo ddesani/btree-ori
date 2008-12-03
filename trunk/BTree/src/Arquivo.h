@@ -1,4 +1,3 @@
-
 using namespace std;
 
 class Arquivo
@@ -46,14 +45,14 @@ public:
 		return aux;
 	}
 
-	void inserirArq(int n)
+	int inserirArq()
 	{
 		//Tipo registro que auxilia com as variaveis para formar o vetor de char do registro
 		Registro reg;
 
 		//Registro final com todos os campos
 		char registro[242];
-
+		
 		//nome
 		cout << "Nome: ";
 		cin >> reg.nome;
@@ -147,30 +146,36 @@ public:
 		//Ano Ingresso 
 		cout << "Ano Ingresso: ";
 		cin >> reg.anoIngresso;
-		aux = insereEspaco(reg.anoIngresso, reg.tamanhoAnoIngresso);
+		aux = insereEspaco(reg.anoIngresso, reg.tamanhoAnoIngresso+1);
 		strcat(registro, aux);
 
 		//coloca o xA no fim registro ao inves do \0
 		registro[241] = '\xA';
-
-		//insere na ultima linha do arquivo
-		f.seekg(n*sizeof(registro), ios::beg);
-		f.clear();
-		f.write(registro, 242);
-
+		
+		
+		char *auxiliar = lerCabecalhoDisp();
+		if(auxiliar[0] == '0' )
+		{
+			f.seekp(0,ios::end);
+			int i = f.tellp();
+			f.write(registro, 242);
+			return i;
+		}
+		else
+		{
+			char endCampo[100];
+			int b = atoi(lerCabecalhoDisp());
+			f.seekp(b, ios::beg);
+			strcpy(endCampo, lerCampo(lerCabecalhoDisp()));
+			f.seekp(b, ios::beg);
+			f.write(registro, 242);	
+			int aa = atoi(endCampo);
+			escreverCabecalhoDisp(aa);
+			return b;
+					
+		}
+		
 	}
-	
-	
-
-	/*void escreve()
-	 {
-	 busca na fila posicao livre
-	 f.clear();
-	 f.seekg(posicao,ios::beg);
-	 f.write(nome, sizeof(Registro));
-	 
-	 }
-	 */
 	
 	//metodo que retorna o ra de um registro, dada a sua posicao no arquivo de dados
 	int getRA(int posicao)
@@ -197,17 +202,8 @@ public:
 	//metodo que converte inteiro para char
 	char* intToChar(int endereco)
 	{
-		stringstream out;
-		string s;//string que recebera o int convertido
-		 char *caracter; //char que recebera a string convertida
-		
-		
-		//converte inteiro para string
-		out << endereco;
-		s = out.str();
-		
-		//converte string para char
-		caracter = const_cast<char*>(s.c_str());
+		char *caracter = new char[100];
+		sprintf(caracter, "%d", endereco);
 		
 		return caracter;
 		
@@ -218,8 +214,18 @@ public:
 	char* lerCabecalhoDisp()
 	{
 		char *buf = new char[100];
+		char temp;
+		int i = 0;
+		
 		f.seekg(40, ios::beg);
-		f.read(buf,3);
+		f.read(&temp, 1);
+		do
+		{
+			buf[i++] = temp;
+			f.read(&temp,1);
+		}
+		while(temp != ' ');
+		buf[i] = '\0';
 		
 		return buf;
 	}
@@ -227,11 +233,16 @@ public:
 	//metodo que escreve no cabecalho a posicao do ultimo registro excluido
 	void escreverCabecalhoDisp(unsigned int endereco)
 	{
-		char *end = new char[100];
-		end = intToChar(endereco);
-		
-		f.seekg(40, ios::beg);
-		f.write(end, sizeof(end));
+		char end[100];
+		strcpy(end, intToChar(endereco));
+		if(endereco == 0){
+			int i = 1;
+			while(i < 100){
+				end[i++] = ' ';
+			}
+		}		
+		f.seekp(40, ios::beg);
+		f.write(end, 100);
 	}
 	
 	/* metodo que remove um registro do arquivo de dados
@@ -255,10 +266,12 @@ public:
 				++i;
 			}
 			limpo[241] = '\xA';
-			f.seekg(endereco, ios::beg);
+			
+			f.seekp(endereco, ios::beg);
 			f.clear();
 			f.write(limpo, 242);
 			escreverCabecalhoDisp(endereco);
+			f.flush();
 			return 1;
 	}
 	
@@ -282,11 +295,8 @@ public:
 		strncpy(campo,campo,i);
 		campo[i] = '\0'; 
 		
-		cout << campo << endl;
 		
 		return campo;
 	}
 	
-	
-
 };
