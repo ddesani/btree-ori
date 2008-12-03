@@ -1,8 +1,12 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <cstdlib>
+#include <cstdio>
 using namespace std;
 
+#include "src/Chave.h"
+#include "src/No.h"
 #include "src/Registro.h"
 #include "src/CabecalhoArquivo.h"
 #include "src/Arquivo.h"
@@ -10,34 +14,39 @@ using namespace std;
 
 int main()
 {
-/*	Btree arvore(3);
-	Chave chave;
+	Btree arvore(3);
+	Arquivo arq("registro.txt");
+	int opcao=-1;
+	int RA;
 	
-	for (int i = 0; i < 4; i++)
-	{		
-		cin >> chave.registro;
-		cin >> chave.valor;
-		arvore.inserir(chave);
+	while(opcao != 0)
+	{
+		cout << "Digite 1 para inserir" << endl;
+		cout << "Digite 2 para buscar" << endl;
+		cout << "Digite 3 para deletar" << endl;
+		cout << "Digite 0 para sair;
+		cin >> opcao;
+		
+		switch(opcao)
+		{
+			case 1:
+				arq.inserirArq();
+				break;
+			case 2:
+				cin >> RA;
+				arq.buscar(RA);
+				break;
+			case 3:
+				arq.removerRegistro();
+			case 0:
+				opcao = 0;
+				break;
+			default:
+				cin << opcao;
+				break;
+				
+		}
 	}
-
-	arvore.mostrar();
-*/
-	
-	Arquivo a("registro.txt");
-	
-//	a.escreverCabecalhoDisp(11111);
-	/*int x = 968;
-	char *j = new char[100];
-	j = a.intToChar(x);
-	
-	a.lerCampo(j);*/
-	
-	a.removerRegistro(242*6);
-	/*unsigned long x;
-	char y[11] = {'1','1','1','1','1','1','1','1','1','1','1'};
-	
-	x = atol(y);
-	cout << x;*/
 
 	cout << endl << "Fim " << endl;
 	return 0;
