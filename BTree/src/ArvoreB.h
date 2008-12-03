@@ -14,6 +14,9 @@ public:
 	pontno raiz;
 	int nChaves, nosMinimos;
 
+	long	_raiz;
+	long	_endListaDispo;
+	
 	Btree(int n)
 	{
 		fB.open("btree.txt");
@@ -21,50 +24,113 @@ public:
 		//fB << 'I' << '.' << n +1 << '.' << 0 << '.' << 0 << '\xa';
 
 		nChaves = n;
-		lista = new Chave[n+1];
-		listaPtr = new pontno[n+2];
-		nosMinimos = n / 2;
+		lista = new Chave[n+1]; //lista para a ordenacao das chaves do No
+		listaPtr = new pontno[n+2]; //lista de ponteiros para os No`s filhos
+		nosMinimos = n / 2; //quantidade minima de No`s
 		raiz = NULL;
 
-		cout << getEndN(8, 3);
-
+		_raiz = 0;
+		
+		
 	}
 	Btree()
 	{
-		char id[2];
-		int ordem;
-		int endRaiz;
-		int endLista;
-
+		
+		
 		fB.open("btree.txt");
 		if (fB.is_open())
 		{
-			fB >> id[0] >> ordem >> endRaiz >> endLista;
+			int ordem = getOrdemC();
+			
+			_raiz = getEndRaizC(); //obtem o endereco da raiz no cabecalho
+			_endListaDispo = getEndListaC();
+			
+			lista = new Chave[ordem]; //lista para a ordenacao das chaves do No
+			listaPtr = new pontno[ordem +1]; //lista de ponteiros para os No`s filhos
+			
+			nChaves =  ordem -1;
+			nosMinimos = (ordem -1) / 2; //quantidade minima de No`s
+			raiz = NULL;
+			_raiz = 0;
 		}
 
-		//metodo para fazer a leitura do cabecalho
-
-
+		/*//metodo para fazer a leitura do cabecalho
+		nosMinimos = n / 2; //quantidade minima de No`s
+		raiz = NULL;
+		_raiz = 0;
 		//objCabecalhoB.setOrdemB(n+1); //n+1 eh a ordem da arvore
-		/*	nChaves = objCabecalhoB.getOrdemB()-1;
+			nChaves = objCabecalhoB.getOrdemB()-1;
 		 lista = new Chave[objCabecalhoB.getOrdemB()];
 		 listaPtr = new pontno[objCabecalhoB.getOrdemB() + 1];
-		 nosMinimos = (objCabecalhoB.getOrdemB() -1) / 2;*/
-		raiz = NULL;
+		 nosMinimos = (objCabecalhoB.getOrdemB() -1) / 2;
+		raiz = NULL;*/
 	}
 
 	/*
 	 * Funcoes para obter o Nodo
 	 */
+	
+	long getFilhoN(long posicao, int indice)
+	{
+		int ordem = getOrdemC();
+		if (indice < ordem)
+		{
+			int i=0;
+			char a[1];
+			long end;
+			fB.seekg(posicao, ios::beg);
+			do
+			{
+				fB >> a[0];
 
-	int getEndN(int posicao, int indice)
+				if (a[0] == '.')
+					i++;
+			} while (i != indice + 2*(ordem-1) + 2); //posicao inicial dos filhos no No
+
+			fB >> end;
+
+			return end;
+
+		}
+		else
+			return -1; //mudar para 0 quando testar com registro.txt
+	}
+	
+	
+	long getPaiN(long posicao)
+	{
+		int ordem = getOrdemC();
+		if (posicao != 0) //ver o limite para a posicao de acordo com o cabecalho
+		{
+			int i=0;
+			char a[1];
+			long end;
+			fB.seekg(posicao, ios::beg);
+			do
+			{
+				fB >> a[0];
+
+				if (a[0] == '.')
+					i++;
+			} while (i != 2*(ordem -1) +1);
+
+			fB >> end;
+
+			return end;
+
+		}
+		else
+			return -1; //mudar para 0 quando testar com registro.txt
+	}
+
+	long getEndN(long posicao, int indice)
 	{
 		int ordem = getOrdemC();
 		if (indice < ordem -1)
 		{
 			int i=0;
 			char a[1];
-			int end;
+			long end;
 			fB.seekg(posicao, ios::beg);
 			do
 			{
@@ -83,7 +149,7 @@ public:
 			return -1; //mudar para 0 quando testar com registro.txt
 	}
 
-	int getRaN(int posicao, int indice)
+	int getRaN(long posicao, int indice)
 	{
 		if (indice < getOrdemC() -1)
 		{
@@ -108,7 +174,7 @@ public:
 			return -1; //mudar para 0 quando testar com registro.txt
 	}
 
-	int getNumeroChavesN(int posicao)
+	int getNumeroChavesN(long posicao)
 	{
 		int nChavesN =0;
 
@@ -119,6 +185,17 @@ public:
 
 	}
 
+	void	setNumeroChavesN(long posicao)
+	{
+		int nChavesN =0;
+
+		fB.seekp(posicao, ios::beg);
+		fB << nChavesN;
+
+		return nChavesN;
+	}
+	
+	
 	/*
 	 * Funcoes para obter o cabecalho
 	 */
@@ -153,9 +230,9 @@ public:
 		return endRaiz;
 	}
 
-	int getPosListaC()
+	int getEndListaC()
 	{
-		int endRaiz;
+		int endListaDispo;
 		char a[1];
 		fB.seekg(4, ios::beg);
 
@@ -164,10 +241,12 @@ public:
 			fB >> a[0];
 		} while (a[0] != '.');
 
-		fB >> endRaiz;
-		return endRaiz;
+		fB >> endListaDispo;
+		return endListaDispo;
 	}
 
+	
+	
 	~Btree()
 	{
 		fB.close();
@@ -194,16 +273,16 @@ public:
 
 		fB << no->getNChaves() << '.';
 		for (int i=0; i<nChaves; ++i)
-		{
 			fB << no->chave[0].valor << '.';
+
+		for (int i=0; i<nChaves; ++i)
 			fB << no->chave[0].registro << '.';
 
-		}
 		fB << no->pai << '.';
-		for (int i=0; i<nChaves -1; ++i)
-			fB << no->filho[0] << '.';
+		for (int i = 0; i<= nChaves; ++i) //escreve n+1 (ordem) ponteiros
+			fB << no->filho[i] << '.';
 
-		fB << no->filho[0] << '\xa';
+		fB << '\xa'; // termina o nodo com \xa
 
 		endRaiz = getEndRaizC();
 
@@ -335,9 +414,37 @@ public:
 
 public:
 
+	No	carregaNo(long posicao)
+	{
+		No	aux(nChaves);
+		if(posicao != 0)
+		{
+			
+			
+			aux.nChaves = getNumeroChavesN(posicao);
+			for(int i=0; i<aux.nChaves; ++i)
+				aux.chave[i].valor = getRaN(posicao,i);
+			
+			for(int i=0; i<aux.nChaves; ++i)
+				aux.chave[i].registro = getEndN(posicao,i);
+			
+			aux.set_pai(getPaiN(posicao)); 
+			
+			for(int i=0; i<aux.nChaves+1; ++i);
+				//aux.set_filho(getFilhoN(posicao,i),i);
+		}
+		
+		return	aux;
+	}
+	
+	
+	
 	long buscar(char ch)
 	{
 		pontno no = raiz;
+		
+		
+		//no->
 		int i;
 
 		while (no)
