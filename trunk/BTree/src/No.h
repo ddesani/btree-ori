@@ -9,9 +9,10 @@ public:
 	Chave *chave; // vetor de chaves do no 
 	No **filho; // vetor de ponteiros para os nos filhos    
 	No *pai; // ponteiro para o no pai
+	long	_pos;
 	
-	int _pai;
-	int* _filho;
+	long _pai;
+	long* _filho;
 	
 public:
 	No(int n)
@@ -22,28 +23,38 @@ public:
 		pai = NULL;
 		
 		_pai = 0;
-		_filho = new int[n+1];
+		_filho = new long[n+1];
 		
 	}
 	
-	void set_pai(int end)
+	void set_pai(long end)
 	{
 		_pai = end;
 	}
 
-	int	get_pai()
+	long	get_pai()
 	{
 		return _pai;
 	}
 	
-	void set_filho(int valor, int pos)
+	void set_filho(long valor, int indice)
 	{
-		_filho[pos] = valor;
+		_filho[indice] = valor;
 	}
 	
-	int get_filho(int posicao)
+	void set_pos(long posicao)
 	{
-		return _filho[posicao];
+		_pos = posicao;
+	}
+	
+	long get_pos()
+	{
+		return _pos;
+	}
+	
+	long get_filho(int indice)
+	{
+		return _filho[indice];
 	}
 	
 	~No()
