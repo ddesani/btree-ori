@@ -19,32 +19,38 @@ class CabecalhoArquivo
 			
 		}
 		
+		//retorna o endereco do ultimo excluido lista de disponiveis
 		int getEnderecoDisp()
 		{
 			return enderecoDisp;
 		}
-		
+		//seta enderecoDisponiveis
 		void setEnderecoDisp(int endereco)
 		{
 			enderecoDisp = endereco;
 		}
 		
+		//seta enderecoArquivo
 		void setEnderecoArquivo(int endereco)
 		{
 			enderecoArquivo = endereco;
 		}
 		
-		
+		//retorna o endereco do comeco do arquivo de dados
 		int getEnderecoArquivo()
 		{
 			return enderecoArquivo;
 		}
 		
+		//retorna a identificacao do cabecalho
 		char getIdentificacao()
 		{
 			return identificacao;
 		}
 		
+		
+		
+	
 		
 		
 	

@@ -58,12 +58,14 @@ public:
 		tamanhoCurso = 25;
 		tamanhoAnoIngresso = 4;
 	}
-
+	
+	//retorna o RA (cast para inteiro)
 	int getRA()
 	{
 		return atoi(RA);
 	}
 
+	//metodo para ajuste dos campos do registro
 	void ajusta()
 	{
 		ajusta(nome, 40);
@@ -85,6 +87,7 @@ public:
 
 	}
 
+	//metodo para impressao dos dados de um registro
 	void imprime()
 	{
 		cout << endl;
@@ -110,7 +113,9 @@ public:
 
 private:
 
-	
+	/* metodo para ajustar os dados do arquivo de dados
+	 * ele separa por variaveis cada um dos campos
+	 */
 	char* ajusta(char* var, int n)
 	{
 		char* aux = new char [n-1];
