@@ -171,14 +171,16 @@ public:
 	 
 	 }
 	 */
-
+	
+	//metodo que retorna o ra de um registro, dada a sua posicao no arquivo de dados
 	int getRA(int posicao)
 	{
 		f.seekg(posicao, ios::beg);
 		f.getline(reinterpret_cast<char *>(&r), 242);
 		return r.getRA();
 	}
-
+	
+	//imprime um registro dada a sua posicao
 	void imprime(int posicao)
 	{
 		f.seekg(posicao, ios::beg);
@@ -193,11 +195,11 @@ public:
 	}
 	
 	//metodo que converte inteiro para char
-	const char* intToChar(int endereco)
+	char* intToChar(int endereco)
 	{
 		stringstream out;
 		string s;//string que recebera o int convertido
-		const char *caracter; //char que recebera a string convertida
+		 char *caracter; //char que recebera a string convertida
 		
 		
 		//converte inteiro para string
@@ -205,43 +207,58 @@ public:
 		s = out.str();
 		
 		//converte string para char
-		caracter = s.c_str();
+		caracter = const_cast<char*>(s.c_str());
 		
 		return caracter;
 		
 	}
 	
 	
-	void manipCabecalho()
+	//metodo que le o endereco disponivel no cabecalho
+	char* lerCabecalhoDisp()
 	{
-		/*char cabecalho[242];
-		char *aux;
+		char *buf = new char[100];
+		f.seekg(40, ios::beg);
+		f.read(buf,3);
 		
-		char *end;
-		strcpy(end, intToChar(a.getEnderecoArquivo()));
-		
-		
-		strcpy(cabecalho, a.getIdentificacao());
-		strcat(cabecalho, " ");
-		strcat(cabecalho, end);
-		strcat(cabecalho, " ");
-		strcat(cabecalho, intToChar(a.getEnderecoDisp()));
-		
-				
-		
-		aux = insereEspaco(cabecalho, 200);
-		strcpy(cabecalho, aux);
-		cabecalho[241] = '\xA';
-		
-		insereArq(0, cabecalho);*/
-		
-		f.clear();
-		f << a.getIdentificacao();
-		f << '\n';
-		f << a.getEnderecoArquivo();
-		//f << intToChar(a.getEnderecoDisp());
-		
-		
+		return buf;
+	}
+	
+	//metodo que escreve no cabecalho a posicao do ultimo registro excluido
+	void escreverCabecalhoDisp(unsigned int endereco)
+	{
+		char *end = new char[100];
+		end = intToChar(endereco);
+		f.seekg(40, ios::beg);
+		f.write(end, sizeof(end));
+	}
+	
+	/* metodo que remove um registro do arquivo de dados
+	 * é verificado no metodo lerCabecalhoDisp() o ultimo registro excluido,
+	 * ele le no cabecalho a ultima posicao removida e vai ate ela marcar a posicao atual a ser removida.
+	 * e assim sucessivamente. 
+	 */
+	int removerRegistro(unsigned int endereco)
+	{
+		char* aux = lerCabecalhoDisp();
+	
+			char limpo[242];
+			strcpy(limpo, " ");
+			strcat(limpo, aux);
+			int i = 0;
+			while (limpo[i] != '\0')
+				++i;
+			while (i < 241)
+			{
+				strcat(limpo, " ");
+				++i;
+			}
+			limpo[241] = '\xA';
+			f.seekg(endereco, ios::beg);
+			f.clear();
+			f.write(limpo, 242);
+			escreverCabecalhoDisp(endereco);
+			return 1;
 	}
 	
 	

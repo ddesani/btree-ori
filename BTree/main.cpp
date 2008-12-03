@@ -25,7 +25,14 @@ int main()
 	
 	Arquivo a("registro.txt");
 	
-	a.manipCabecalho();
+	//a.escreverCabecalhoDisp(11111);
+	
+	a.removerRegistro(242*4);
+	/*unsigned long x;
+	char y[11] = {'1','1','1','1','1','1','1','1','1','1','1'};
+	
+	x = atol(y);
+	cout << x;*/
 
 	cout << endl << "Fim " << endl;
 	return 0;
