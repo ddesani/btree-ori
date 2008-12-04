@@ -110,6 +110,16 @@ public:
 		cout << "Ano Ingresso: " << anoIngresso << endl;
 		cout << endl;
 	}
+	
+	//verifica se ha registro em uma determinada posicao de endereco
+	bool testaRegistro()
+	{
+		if(nome[0] == ' ')
+			return false;
+		else
+			return true;
+	}
+	
 
 private:
 

@@ -1,4 +1,8 @@
 using namespace std;
+/*
+ * No cabecalho contem os seguintes campos, respectivamente:
+ * Identificacao do cabecalho, seu endereco e a posicao do ultimo registro excluido
+ */
 
 class Arquivo
 {
@@ -6,6 +10,7 @@ private:
 	string nome;
 	fstream f;
 	Registro r;
+	//
 	CabecalhoArquivo a;
 	
 	void insereArq(int n, char *registro){
@@ -190,11 +195,20 @@ public:
 	{
 		f.seekg(posicao, ios::beg);
 		f.getline(reinterpret_cast<char *>(&r), 242);
-		r.imprime();
+		
+		if(r.testaRegistro() == true)
+		{
+			r.ajusta();
+			r.imprime();
+		}
+		else
+			cout << "Nao ha registro nesta posicao." << endl;
+		
+		
 	}
 
 	//retorna posicao do arquivo
-	int getPosicao()
+	long getPosicao()
 	{
 		return f.tellg();
 	}
@@ -206,7 +220,6 @@ public:
 		sprintf(caracter, "%d", endereco);
 		
 		return caracter;
-		
 	}
 	
 	
@@ -233,16 +246,21 @@ public:
 	//metodo que escreve no cabecalho a posicao do ultimo registro excluido
 	void escreverCabecalhoDisp(unsigned int endereco)
 	{
-		char end[100];
+		char end[200];
+		int count = 0;
+		
 		strcpy(end, intToChar(endereco));
-		if(endereco == 0){
-			int i = 1;
-			while(i < 100){
-				end[i++] = ' ';
-			}
-		}		
+		
+		f.seekg(40,ios::beg);
+		while(end[count] != '\0')
+			count++;
+		
+		int i = count;
+		while(i < 200)
+			end[i++] = ' ';
+		
 		f.seekp(40, ios::beg);
-		f.write(end, 100);
+		f.write(end, sizeof(end));
 	}
 	
 	/* metodo que remove um registro do arquivo de dados
@@ -250,29 +268,42 @@ public:
 	 * ele le no cabecalho a ultima posicao removida e vai ate ela marcar a posicao atual a ser removida.
 	 * e assim sucessivamente. 
 	 */
-	int removerRegistro(unsigned int endereco)
+	bool removerRegistro(unsigned int endereco)
 	{
+		char b[1];
 		char* aux = lerCabecalhoDisp();
-	
-			char limpo[242];
-			strcpy(limpo, " ");
-			strcat(limpo, aux);
-			int i = 0;
-			while (limpo[i] != '\0')
-				++i;
-			while (i < 241)
-			{
-				strcat(limpo, " ");
-				++i;
-			}
-			limpo[241] = '\xA';
-			
+		
+		char limpo[242];
+		strcpy(limpo, " ");
+		strcat(limpo, aux);
+		int i = 0;
+		while (limpo[i] != '\0')
+			++i;
+		while (i < 241)
+		{
+			strcat(limpo, " ");
+			++i;
+		}
+		limpo[241] = '\xA';
+		
+		f.clear();
+		f.seekg(endereco, ios::beg);
+		//f >> b[0];
+		f.read(b,1);
+		
+		if(b[0] != ' ' )
+		{
 			f.seekp(endereco, ios::beg);
-			f.clear();
 			f.write(limpo, 242);
 			escreverCabecalhoDisp(endereco);
 			f.flush();
-			return 1;
+			
+			return true;
+		}
+		else
+			return false;
+		
+			
 	}
 	
 	//metodo para leitura do campo que indica que um registro foi removido.
@@ -297,6 +328,29 @@ public:
 		
 		
 		return campo;
+	}
+	
+	//conta quantos registros tem.
+	bool contaRegistro(int* ra, long* end)
+	{
+		int count = 0;
+		
+		f.clear();
+		f.seekg(242,ios::beg);
+		
+		while(f.getline(reinterpret_cast<char *>(&r), 242))
+		{
+			//f.getline(reinterpret_cast<char *>(&r), 242);
+			
+			if(r.testaRegistro() == true)
+			{
+				count++;
+				*ra = r.getRA();
+				*end = getPosicao();
+			}
+		}
+		return true;
+		
 	}
 	
 };
