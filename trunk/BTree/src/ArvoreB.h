@@ -3,316 +3,98 @@
 
 using namespace std;
 
-typedef No *pontno;
+//typedef No *pontno;
 
 class Btree
 {
 public:
-	fstream fB;
-	Chave *lista;
-	pontno *listaPtr;
-	pontno raiz;
+	//fstream fB;
+	ArquivoB objArqB;
+	
+	
+	Chave* lista;
+	No** listaPtr;
+	No* raiz;
 	int nChaves, nosMinimos;
 
-	long	_raiz;
-	long	_endListaDispo;
-	
+	long _raiz;
+	long* _listaPtr;
+	long _endListaDispo;
+
 	Btree(int n)
 	{
-		fB.open("btree.txt");
-		fB.seekg(0);
-		//fB << 'I' << '.' << n +1 << '.' << 0 << '.' << 0 << '\xa';
-
+		
+		objArqB.setFileName("btree.txt");
+		objArqB.open();
+		
 		nChaves = n;
+		objArqB.setCabecalho(nChaves + 1); // recebe o numero de elementos +1 == ordem
+		
 		lista = new Chave[n+1]; //lista para a ordenacao das chaves do No
-		listaPtr = new pontno[n+2]; //lista de ponteiros para os No`s filhos
+		listaPtr = new No*[n+2]; //lista de ponteiros para os No`s filhos
+		_listaPtr = new long[n+2];
 		nosMinimos = n / 2; //quantidade minima de No`s
 		raiz = NULL;
 
 		_raiz = 0;
-		
-		//cout << getRaN(8,0);
-		
-		carregaNo(8);
-		
+
 	}
 	Btree()
 	{
-		
-		
-		fB.open("btree.txt");
-		if (fB.is_open())
+
+		//fB.open("btree.txt");
+		if (!objArqB.open())
 		{
-			int ordem = getOrdemC();
-			
-			_raiz = getEndRaizC(); //obtem o endereco da raiz no cabecalho
-			_endListaDispo = getEndListaC();
-			
+			int ordem = objArqB.getOrdemC();
+
+			_raiz = objArqB.getEndRaizC(); //obtem o endereco da raiz no cabecalho
+			_endListaDispo = objArqB.getEndListaC();
+
 			lista = new Chave[ordem]; //lista para a ordenacao das chaves do No
-			listaPtr = new pontno[ordem +1]; //lista de ponteiros para os No`s filhos
-			
-			nChaves =  ordem -1;
+			listaPtr = new No*[ordem +1]; //lista de ponteiros para os No`s filhos
+
+			nChaves = ordem -1;
 			nosMinimos = (ordem -1) / 2; //quantidade minima de No`s
 			raiz = NULL;
 			_raiz = 0;
 		}
 
-		/*//metodo para fazer a leitura do cabecalho
-		nosMinimos = n / 2; //quantidade minima de No`s
-		raiz = NULL;
-		_raiz = 0;
-		//objCabecalhoB.setOrdemB(n+1); //n+1 eh a ordem da arvore
-			nChaves = objCabecalhoB.getOrdemB()-1;
-		 lista = new Chave[objCabecalhoB.getOrdemB()];
-		 listaPtr = new pontno[objCabecalhoB.getOrdemB() + 1];
-		 nosMinimos = (objCabecalhoB.getOrdemB() -1) / 2;
-		raiz = NULL;*/
-	}
-
-	/*
-	 * Funcoes para obter o Nodo
-	 */
-	
-	long getFilhoN(long posicao, int indice)
-	{
-		int ordem = getOrdemC();
-		if (indice < ordem)
-		{
-			int i=0;
-			char a[1];
-			long end;
-			fB.seekg(posicao, ios::beg);
-			do
-			{
-				fB >> a[0];
-
-				if (a[0] == '.')
-					i++;
-			} while (i != indice + 2*(ordem-1) + 2); //posicao inicial dos filhos no No
-
-			fB >> end;
-
-			return end;
-
-		}
-		else
-			return -1; //mudar para 0 quando testar com registro.txt
-	}
-	
-	
-	long getPaiN(long posicao)
-	{
-		int ordem = getOrdemC();
-		if (posicao != 0) //ver o limite para a posicao de acordo com o cabecalho
-		{
-			int i=0;
-			char a[1];
-			long end;
-			fB.seekg(posicao, ios::beg);
-			do
-			{
-				fB >> a[0];
-
-				if (a[0] == '.')
-					i++;
-			} while (i != 2*(ordem -1) +1);
-
-			fB >> end;
-
-			return end;
-
-		}
-		else
-			return -1; //mudar para 0 quando testar com registro.txt
-	}
-
-	long getEndN(long posicao, int indice)
-	{
-		int ordem = getOrdemC();
-		if (indice < ordem -1)
-		{
-			int i=0;
-			char a[1];
-			long end;
-			fB.seekg(posicao, ios::beg);
-			do
-			{
-				fB >> a[0];
-
-				if (a[0] == '.')
-					i++;
-			} while (i != indice + ordem);
-
-			fB >> end;
-
-			return end;
-
-		}
-		else
-			return -1; //mudar para 0 quando testar com registro.txt
-	}
-
-	int getRaN(long posicao, int indice)
-	{
-		if (indice < getOrdemC() -1)
-		{
-			int i=0;
-			char a[1];
-			int ra;
-			fB.seekg(posicao, ios::beg);
-			do
-			{
-				fB >> a[0];
-
-				if (a[0] == '.')
-					i++;
-			} while (i != indice+1);
-
-			fB >> ra;
-
-			return ra;
-
-		}
-		else
-			return -1; //mudar para 0 quando testar com registro.txt
-	}
-
-	int getNumeroChavesN(long posicao)
-	{
-		int nChavesN =0;
-
-		fB.seekg(posicao, ios::beg);
-		fB >> nChavesN;
-
-		return nChavesN;
-
-	}
-
-	void	setNumeroChavesN(long posicao)
-	{
-		int nChavesN =0;
-
-		fB.seekp(posicao, ios::beg);
-		fB << nChavesN;
-
-	}
-	
-	
-	/*
-	 * Funcoes para obter o cabecalho
-	 */
-
-	char getIdC()
-	{
-		char id[1];
-
-		fB.seekg(0, ios::beg);
-		fB >> id[0];
-
-		return id[0];
-	}
-
-	int getOrdemC()
-	{
-		int ordem;
-
-		fB.seekg(2, ios::beg);
-		fB >> ordem;
-
-		return ordem;
-	}
-
-	int getEndRaizC()
-	{
-		int endRaiz;
-
-		fB.seekg(4, ios::beg);
-		fB >> endRaiz;
-
-		return endRaiz;
-	}
-
-	int getEndListaC()
-	{
-		int endListaDispo;
-		char a[1];
-		fB.seekg(4, ios::beg);
-
-		do
-		{
-			fB >> a[0];
-		} while (a[0] != '.');
-
-		fB >> endListaDispo;
-		return endListaDispo;
 	}
 
 	
-	
+
 	~Btree()
 	{
-		fB.close();
+		//fB.close();
 		delete[] lista;
 		delete[] listaPtr;
+		delete[] _listaPtr;
 
 	}
 
-	void leNo(int posicao)
+	void insere(Chave ch, No* no, No* _filho1, No* _filho2)
 	{
-
-	}
-
-	void escreveNo(pontno no)
-	{
-		int ordem;
-		int endRaiz;
-		int endLista;
-		int pos;
-
-		fB.seekp(0, ios::end);
-
-		pos = fB.tellp();
-
-		fB << no->getNChaves() << '.';
-		for (int i=0; i<nChaves; ++i)
-			fB << no->chave[0].valor << '.';
-
-		for (int i=0; i<nChaves; ++i)
-			fB << no->chave[0].registro << '.';
-
-		fB << no->pai << '.';
-		for (int i = 0; i<= nChaves; ++i) //escreve n+1 (ordem) ponteiros
-			fB << no->filho[i] << '.';
-
-		fB << '\xa'; // termina o nodo com \xa
-
-		endRaiz = getEndRaizC();
-
-		if (endRaiz == 0)
-		{
-			fB.seekp(4);
-			fB << pos;
-		}
-
-	}
-
-	void insere(Chave ch, pontno no, pontno filho1, pontno filho2)
-	{
-		pontno pai, novo;
+		No _pai(nChaves);
+		No* novo;
 		int i, j;
 		bool sair = false;
 
 		// inserir nova chave no no
 		do
 		{
-			if (!no)
+			if (no->getNChaves() != 0)
 			{
 				no = new No(nChaves); //** cria a raiz
 				no->setNChaves(0);
-				no->pai = NULL;
-				raiz = no;
+				no->_pai = 0;
+				_raiz = no->get_pos();
+				//setEndRaizC(_raiz);
+				objArqB.setRaiz(_raiz);
+				
 			}
-			pai = no->pai;
+			if (no->get_pai() != 0)
+				_pai = objArqB.carregaNo(no->get_pai(), nChaves);
+
 			if (no->getNChaves() == nChaves)
 			{ // overflow
 				// no direito
@@ -322,16 +104,16 @@ public:
 				while (no->chave[i].valor < ch.valor && i < nChaves)
 				{
 					lista[i] = no->chave[i];
-					listaPtr[i] = no->filho[i];
-					i++;
+					_listaPtr[i] = no->get_filho(i);
+					++i;
 				}
 				lista[i] = ch;
-				listaPtr[i] = filho1;
-				listaPtr[i+1] = filho2;
+				_listaPtr[i] = _filho1->get_pos();
+				_listaPtr[i+1] = _filho2->get_pos();
 				while (i < nChaves)
 				{
 					lista[i+1] = no->chave[i];
-					listaPtr[i+2] = no->filho[i+1];
+					_listaPtr[i+2] = no->get_filho(i+1);
 					i++;
 				}
 				// Dividir nos
@@ -340,31 +122,31 @@ public:
 				for (j = 0; j < no->getNChaves(); j++)
 				{
 					no->chave[j] = lista[j];
-					no->filho[j] = listaPtr[j];
+					no->set_filho(_listaPtr[j], j);
 				}
-				no->filho[no->getNChaves()] = listaPtr[no->getNChaves()];
+				no->set_filho(_listaPtr[no->getNChaves()], no->getNChaves());
 
 				// No direito
 				novo->setNChaves(nChaves - no->getNChaves());
 				for (j = 0; j < novo->getNChaves(); j++)
 				{
 					novo->chave[j] = lista[j+(nChaves/2)+1];
-					novo->filho[j] = listaPtr[j+(nChaves/2)+1];
+					novo->set_filho(_listaPtr[j+(nChaves/2)+1], j);
 				}
-				novo->filho[novo->getNChaves()] = listaPtr[nChaves+1];
+				novo->set_filho(_listaPtr[nChaves+1], novo->getNChaves());
 
 				for (j = 0; j <= no->getNChaves(); j++)
-					if (no->filho[j])
-						(no->filho[j])->pai = no;
+					if (no->get_filho(j))
+						(no->filho[j])->set_pai(no->get_pos());
 
 				for (j = 0; j <= novo->getNChaves(); j++)
-					if (novo->filho[j])
-						(novo->filho[j])->pai = novo;
+					if (novo->get_filho(j))
+						(novo->filho[j])->set_pai(novo->get_pos());
 
 				ch = lista[nChaves/2];
-				filho1 = no;
-				filho2 = novo;
-				no = pai;
+				*_filho1 = objArqB.carregaNo(no->get_pos(), nChaves);
+				*_filho2 = objArqB.carregaNo(novo->get_pos(), nChaves);
+				*no = objArqB.carregaNo(_pai.get_pos(), nChaves);
 			}
 			else //numero de Chaves != no->chaves
 			{
@@ -380,22 +162,24 @@ public:
 						no->chave[j] = no->chave[j-1];
 
 					for (j = no->getNChaves()+1; j > i; j--)
-						no->filho[j] = no->filho[j-1];
+						no->_filho[j] = no->_filho[j-1];
 				}
 				no->setNChaves(no->getNChaves()+1);
 				no->chave[i] = ch;
-				no->filho[i] = filho1;
-				no->filho[i+1] = filho2;
-				if (filho1)
-					filho1->pai = no;
-				if (filho2)
-					filho2->pai = no;
-				escreveNo(no);
+				no->set_filho(_filho1->get_pos(), i);
+				no->set_filho(_filho2->get_pos(), i+1);
+
+				if (_filho1->nChaves != 0)
+					_filho1->set_pai(no->get_pos());
+				if (_filho2->nChaves !=0)
+					_filho2->set_pai(no->get_pos());
+				objArqB.escreveNo2(no);
 				sair = true;
 			}
 		} while (!sair);
 	}
-	void imprimir(pontno no)
+
+	void imprimir(No* no)
 	{
 		int i;
 
@@ -414,82 +198,61 @@ public:
 			imprimir(no->filho[i]);
 	}
 
-public:
 
-	No	carregaNo(long posicao)
+	
+
+	long buscar(int ch)
 	{
-		No	aux(nChaves);
-		if(posicao != 0)
-		{
-			
-			
-			aux.nChaves = getNumeroChavesN(posicao);
-			for(int i=0; i<nChaves; ++i)
-				aux.chave[i].valor = getRaN(posicao,i);
-			
-			for(int j=0; j<nChaves; ++j)
-				aux.chave[j].registro = getEndN(posicao,j);
-			
-			aux.set_pai(getPaiN(posicao)); 
-			
-			for(int k=0; k<nChaves+1; ++k)
-				aux.set_filho(getFilhoN(posicao,k),k);
-		}
-		
-		
-		return	aux;
-	}
-	
-	
-	
-	long buscar(char ch)
-	{
-		pontno no = raiz;
-		
-		
-		//no->
+		No no = objArqB.carregaNo(objArqB.getEndRaizC(), nChaves);
+
 		int i;
 
-		while (no)
+		while (no.getNChaves() !=0)
 		{
-			i = 0;
-			while (i < no->getNChaves() && (no->chave[i].valor < ch))
-				i++;
-			if (no->chave[i].valor == ch)
-				return no->chave[i].registro;
+			i =0;
+			while (i< no.getNChaves() && (no.chave[i].valor < ch))
+				++i;
+			if (no.chave[i].valor == ch)
+				return no.chave[i].registro;
 			else
-				no = no->filho[i];
+				no = objArqB.carregaNo(no._filho[i], nChaves);
 		}
-		return -1L;
+		return 0; //tratar o retorno 0 caso nao ache o valor
 	}
+
+
 	bool inserir(Chave ch)
 	{
-		pontno no, pai;
+		No no(nChaves);
+		No pai(nChaves);
+
 		int i;
 
-		// verificar se a chave nao esta na arvore
-		pai = no = raiz;
-		while (no)
+		// verificar se existe uma raiz para a arvore
+		if (objArqB.getEndRaizC() != 0)
+			pai = no = objArqB.carregaNo(objArqB.getEndRaizC(), nChaves);
+		while (no.getNChaves() !=0)
 		{
 			pai = no;
 			i = 0;
-			while (i < no->getNChaves() && (no->chave[i].valor < ch.valor))
+			while (i < no.getNChaves() && (no.chave[i].valor < ch.valor))
 				i++;
 			/* 
 			 * Caso a chave seja igual ao elemento do vetor e
 			 * o contador i ainda pertence ao intervalo de elementos
 			 * eh retornado false
 			 */
-			if (no->chave[i].valor == ch.valor && i < no->getNChaves())
+			if (no.chave[i].valor == ch.valor && i < no.getNChaves())
 				return false; //chave existente
 			else
-				no = no->filho[i];
+					no = objArqB.carregaNo(no.get_filho(i), nChaves);
 		}
 		no = pai;
-		insere(ch, no, NULL, NULL); // parametros filho1 e filho2 sao null
+		insere(ch, &no, NULL, NULL); // parametros filho1 e filho2 sao null
 		// para inicializar o novo no
 		return true;
 	}
+
 	void mostrar()
 	{
 		cout << "Arvore B" << endl;
