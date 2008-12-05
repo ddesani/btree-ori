@@ -11,7 +11,7 @@ private:
 	fstream f;
 	Registro r;
 	//
-	CabecalhoArquivo a;
+	//CabecalhoArquivo a;
 	
 	void insereArq(int n, char *registro){
 			//insere na ultima linha do arquivo
