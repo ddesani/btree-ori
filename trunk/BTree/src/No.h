@@ -21,7 +21,7 @@ public:
 		chave = new Chave[n];
 		filho = new No*[n+1];
 		pai = NULL;
-		
+		_pos = 0;
 		_pai = 0;
 		_filho = new long[n+1];
 		
@@ -59,8 +59,8 @@ public:
 	
 	~No()
 	{
-		delete[] chave;
-		delete[] filho;
+		/*delete[] chave;
+		delete[] filho;*/
 	}
 	
 	int		getNChaves()
