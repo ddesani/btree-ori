@@ -19,8 +19,7 @@ using namespace std;
  * @author Thiago A. C. Chagas, 280615
  * @version 5 de Dezembro de 2008
  */
-class ArquivoB
-{
+class ArquivoB {
 private:
 	/**
 	 * Stream para controlar o arquivo.
@@ -57,24 +56,20 @@ public:
 	 * Destrutor
 	 * Fecha o arquivo da arvore.
 	 */
-	~ArquivoB()
-	{
+	~ArquivoB() {
 		if (fB.is_open())
 			fB.close();
 	}
 
-	bool open()
-	{
-		
-		if (fB.is_open())
-		{
-			
+	bool open() {
+
+		if (fB.is_open()) {
+
 			this->ordem = this->getOrdem();
 			nodo.iniciaNo(this->ordem);
 
 			return true;
-		}
-		else
+		} else
 			return false;
 	}
 
@@ -82,45 +77,40 @@ public:
 	 * Metodo para construir o cabecalho do arquivo da arvore.
 	 * @param n ordem da arvore.
 	 */
-	void setCabecalho(int n)
-	{
+	void setCabecalho(int n) {
 		char identificador = 'I';
-		ordem = n+1;
+		ordem = n + 1;
 		nodo.iniciaNo(ordem);
 		long temp = 0;
 		fB.seekp(0, ios::beg);
-		fB.write(reinterpret_cast<char*>(&identificador), 1);
-		fB.write(reinterpret_cast<char*>(&n), 4);
-		fB.write(reinterpret_cast<char*>(&temp), 4);
-		fB.write(reinterpret_cast<char*>(&temp), 4);
+		fB.write(reinterpret_cast<char*> (&identificador), 1);
+		fB.write(reinterpret_cast<char*> (&n), 4);
+		fB.write(reinterpret_cast<char*> (&temp), 4);
+		fB.write(reinterpret_cast<char*> (&temp), 4);
 	}
 
 	/**
 	 * Metodo para mudar o valor da raiz.
 	 * @param endereco endereco que vai ser colocado no campo da raiz no cabecalho do arquivo da arvore.
 	 */
-	void setRaiz(long endereco)
-	{
+	void setRaiz(long endereco) {
 		fB.seekp(POSICAO_RAIZ, ios::beg);
-		fB.write(reinterpret_cast<char*>(&endereco), sizeof(endereco));
+		fB.write(reinterpret_cast<char*> (&endereco), sizeof(endereco));
 	}
 
-	void setFileName(string nome)
-	{
+	void setFileName(string nome) {
 		filename = nome;
 	}
 
-	string getFileName()
-	{
+	string getFileName() {
 		return filename;
 	}
 
-	long getRaiz()
-	{
+	long getRaiz() {
 		long raiz;
 
 		fB.seekg(POSICAO_RAIZ, ios::beg);
-		fB.read(reinterpret_cast<char *>(&raiz), 4);
+		fB.read(reinterpret_cast<char *> (&raiz), 4);
 
 		return raiz;
 	}
@@ -129,40 +119,35 @@ public:
 	 * Metodo que muda o valor do endereco na lista de disponiveis no arquivo da arvore.
 	 * @param endereco endereco a ser gravado na lista de disponiveis do arquivo da arvore.
 	 */
-	void setListaDisp(long endereco)
-	{
+	void setListaDisp(long endereco) {
 		fB.seekp(POSICAO_DISPONIVEIS, ios::beg);
-		fB.write(reinterpret_cast<char*>(&endereco), sizeof(endereco));
+		fB.write(reinterpret_cast<char*> (&endereco), sizeof(endereco));
 	}
 
 	/**
 	 * Metodo que retorna o endereco da lista de disponiveis do arquivo da arvore.
 	 * @return retorna o endereco que esta disponivel para gravar um nodo no arquivo da arvore.
 	 */
-	long getListaDisp()
-	{
+	long getListaDisp() {
 		long enderecoDisp;
 		fB.seekg(POSICAO_DISPONIVEIS, ios::beg);
-		fB.read(reinterpret_cast<char*>(&enderecoDisp), sizeof(enderecoDisp));
+		fB.read(reinterpret_cast<char*> (&enderecoDisp), sizeof(enderecoDisp));
 		return enderecoDisp;
 	}
 
-	void setPai(long endereco)
-	{
+	void setPai(long endereco) {
 		nodo.set_pai(endereco);
 	}
 
-	long getPai()
-	{
+	long getPai() {
 		return nodo.get_pai();
 	}
 
-	int getOrdem()
-	{
+	int getOrdem() {
 		int ordem;
 
 		fB.seekg(POSICAO_ORDEM, ios::beg);
-		fB.read(reinterpret_cast<char *>(&ordem), 4);
+		fB.read(reinterpret_cast<char *> (&ordem), 4);
 
 		return ordem;
 	}
@@ -171,30 +156,87 @@ public:
 	 * Metodo que escreve o no carregado no arquivo da arvore.
 	 * @param nodo no carregado na memoria para ser escrito no arquivo da arvore.
 	 */
-	void escreveNo(No* nodo)
-	{
+	void escreveNo(No* nodo) {
 		int dadoI;
 		long dadoL;
+		int i;
 
-		fB.seekp(nodo->get_pos(), ios::beg);
-		fB.write(reinterpret_cast<char*>(nodo->getNChaves()), 4);
-		fB.write(reinterpret_cast<char*>(nodo->get_pai()), 4);
-		for (int i = 0; i < ordem; ++i)
-		{
-			dadoI = nodo->getRA(i);
-			dadoL = nodo->getRegistro(i);
-			fB.write(reinterpret_cast<char*>(&dadoI), 4);
-			fB.write(reinterpret_cast<char*>(&dadoL), 4);
+		if (nodo->get_pos() != 0) {
+			//para um nodo que nao é novo
+			dadoI = nodo->getNChaves();
+			dadoL = nodo->get_pai();
+			fB.seekp(nodo->get_pos(), ios::beg);
+			fB.write(reinterpret_cast<char*> (&dadoI), 4);
+			fB.write(reinterpret_cast<char*> (&dadoL), 4);
+			for (i = 0; i < ordem; ++i) {
+				dadoI = nodo->getRA(i);
+				dadoL = nodo->getRegistro(i);
+				fB.write(reinterpret_cast<char*> (&dadoI), 4);
+				fB.write(reinterpret_cast<char*> (&dadoL), 4);
 
+				dadoL = nodo->get_filho(i);
+				fB.write(reinterpret_cast<char*> (&dadoL), 4);
+			}
 			dadoL = nodo->get_filho(i);
-			fB.write(reinterpret_cast<char*>(&dadoL), 4);
+			fB.write(reinterpret_cast<char*> (&dadoL), 4);
+		} else {
+			//se o nodo é novo
+			long temp = this->getListaDisp();
+			if (temp == 0) {
+				dadoI = nodo->getNChaves();
+				dadoL = nodo->get_pai();
+				fB.seekp(0, ios::end);
+				fB.write(reinterpret_cast<char*> (&dadoI), 4);
+				fB.write(reinterpret_cast<char*> (&dadoL), 4);
+				for (i = 0; i < ordem; ++i) {
+					dadoI = nodo->getRA(i);
+					dadoL = nodo->getRegistro(i);
+					fB.write(reinterpret_cast<char*> (&dadoI), 4);
+					fB.write(reinterpret_cast<char*> (&dadoL), 4);
+
+					dadoL = nodo->get_filho(i);
+					fB.write(reinterpret_cast<char*> (&dadoL), 4);
+				}
+				dadoL = nodo->get_filho(i);
+				fB.write(reinterpret_cast<char*> (&dadoL), 4);
+			} else {
+				dadoI = nodo->getNChaves();
+				dadoL = nodo->get_pai();
+				fB.seekg(temp, ios::beg);
+				long temp2;
+				fB.read(reinterpret_cast<char*>(&temp2), sizeof(temp2));
+				this->setListaDisp(temp2);
+				fB.seekp(temp, ios::beg);
+				fB.write(reinterpret_cast<char*> (&dadoI), 4);
+				fB.write(reinterpret_cast<char*> (&dadoL), 4);
+				for (i = 0; i < ordem; ++i) {
+					dadoI = nodo->getRA(i);
+					dadoL = nodo->getRegistro(i);
+					fB.write(reinterpret_cast<char*> (&dadoI), 4);
+					fB.write(reinterpret_cast<char*> (&dadoL), 4);
+
+					dadoL = nodo->get_filho(i);
+					fB.write(reinterpret_cast<char*> (&dadoL), 4);
+				}
+				dadoL = nodo->get_filho(i);
+				fB.write(reinterpret_cast<char*> (&dadoL), 4);
+			}
 		}
 	}
 
-	No* carregaNo(long posicao)
-	{
-		if (posicao != 0)
-		{
+	/**
+	 * Metodo que remove o nodo do arquivo de dados da arvore.
+	 * @param posicao endereco do nodo no arquivo da arvore.
+	 */
+	void removerNo(long posicao){
+		long temp = this->getListaDisp();
+		this->setListaDisp(posicao);
+		fB.seekp(posicao, ios::beg);
+		fB.write(reinterpret_cast<char*>(&temp), sizeof(temp));
+	}
+
+	No* carregaNo(long posicao) {
+		if (posicao != 0) {
 			int dadosI;
 			long dadosL;
 
@@ -202,21 +244,19 @@ public:
 
 			fB.seekg(posicao, ios::beg);
 
-			fB.read(reinterpret_cast<char *>(&dadosI), 4);
+			fB.read(reinterpret_cast<char *> (&dadosI), 4);
 			nodo.setNChaves(dadosI);
 
-			fB.read(reinterpret_cast<char *>(&dadosL), 4);
+			fB.read(reinterpret_cast<char *> (&dadosL), 4);
 			nodo.set_pai(dadosL);
 
-			for (int i=0; i<ordem; ++i)
-			{
-				fB.read(reinterpret_cast<char*>(&dadosI), 4);
+			for (int i = 0; i < ordem; ++i) {
+				fB.read(reinterpret_cast<char*> (&dadosI), 4);
 				nodo.setRA(dadosI, i);
 			}
 
-			for (int i=0; i<ordem; ++i)
-			{
-				fB.read(reinterpret_cast<char*>(&dadosL), 4);
+			for (int i = 0; i < ordem; ++i) {
+				fB.read(reinterpret_cast<char*> (&dadosL), 4);
 				nodo.setRegistro(dadosL, i);
 			}
 		}
@@ -224,8 +264,7 @@ public:
 		return &nodo;
 	}
 
-	Chave getChave(int indice)
-	{
+	Chave getChave(int indice) {
 		Chave aux;
 
 		aux.setRA(nodo.getRA(indice));
