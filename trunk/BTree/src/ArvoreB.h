@@ -23,7 +23,6 @@ public:
 	Btree(int n)
 	{
 		objArqB.setCabecalho(n+1);
-		objArqB.setFileName("btree.txt");
 		//objArqB.open();
 		nChaves = n;
 		//objArqB.setCabecalho(nChaves + 1); // recebe o numero de elementos +1 == ordem
@@ -66,7 +65,11 @@ public:
 
 	void insere(Chave ch, No* no, No* _filho1, No* _filho2)
 	{
+		
+		_filho1 = new No;
+		_filho2 = new No;
 		No* _pai;
+		_pai = new No;
 		_pai->iniciaNo(nChaves);
 		No* novo;
 		int i, j;
@@ -224,34 +227,36 @@ public:
 
 	bool inserir(Chave ch)
 	{
-		No* no;
-		no->iniciaNo(nChaves);
+		No* no2;
+		no2 = new No;
+		no2->iniciaNo(nChaves);
 		No* pai;
+		pai = new No;
 		pai->iniciaNo(nChaves);
 
 		int i;
 
 		// verificar se existe uma raiz para a arvore
 		if (objArqB.getRaiz() != 0)
-			pai = no = objArqB.carregaNo(objArqB.getRaiz());
-		while (no->getNChaves() !=0)
+			pai = no2 = objArqB.carregaNo(objArqB.getRaiz());
+		while (no2->getNChaves() !=0)
 		{
-			pai = no;
+			pai = no2;
 			i = 0;
-			while (i < no->getNChaves() && (no->getRA(i) < ch.getRA()))
+			while (i < no2->getNChaves() && (no2->getRA(i) < ch.getRA()))
 				i++;
 			/* 
 			 * Caso a chave seja igual ao elemento do vetor e
 			 * o contador i ainda pertence ao intervalo de elementos
 			 * eh retornado false
 			 */
-			if (no->getRA(i) == ch.getRA() && i < no->getNChaves())
+			if (no2->getRA(i) == ch.getRA() && i < no2->getNChaves())
 				return false; //chave existente
 			else
-				no = objArqB.carregaNo(no->get_filho(i));
+				no2 = objArqB.carregaNo(no2->get_filho(i));
 		}
-		no = pai;
-		insere(ch, no, NULL, NULL); // parametros filho1 e filho2 sao null
+		no2 = pai;
+		insere(ch, no2, NULL, NULL); // parametros filho1 e filho2 sao null
 		// para inicializar o novo no
 		return true;
 	}
