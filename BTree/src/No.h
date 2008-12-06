@@ -16,8 +16,6 @@ using namespace std;
  */
 
 class No {
-	//TODO: remover esta linha
-	friend class BTree;
 private:
 	/**
 	 * Numero de chaves armazenadas na pagina.
