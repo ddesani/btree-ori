@@ -4,14 +4,23 @@ using namespace std;
  * Identificacao do cabecalho, seu endereco e a posicao do ultimo registro excluido
  */
 
+/**
+ * @brief Classe Arquivo
+ * Classe para manipular o arquivo de dados. La encontra-se os dados que serao
+ * manipulados pela arvore, como RA e seu endereco no arquivo.
+ *
+ * @author Juliana Scaquetti, 298921
+ * @author Victor Hugo B. R. Santos, 298557
+ * @author Diego D. da Silva, 298700
+ * @author Thiago A. C. Chagas, 280615
+ * @version 6 de Dezembro de 2008
+ */
 class Arquivo
 {
 private:
 	string nome;
 	fstream f;
 	Registro r;
-	//
-	//CabecalhoArquivo a;
 	
 	void insereArq(int n, char *registro){
 			//insere na ultima linha do arquivo
@@ -22,18 +31,32 @@ private:
 	
 			
 public:
+	/**
+	 * Construtor, abre o arquivo de dados
+	 * @param filename string que contem o nome do arquivo
+	 */
 	Arquivo(string filename)
 	{
 		nome = filename;
 		f.open(nome.c_str());
 	}
 	
+	/**
+	 * Destrutor, fecha o arquivo de dados
+	 */
 	~Arquivo()
 	{
 		f.close();
 	}
 
-	//insere espacos vazios no fim de cada variavel char
+	/**
+	 * Metodo que insere espacos vazios no fim de cada variavel char,
+	 * a partir do tamanho da variavel, ele conta quantos caracteres tem o char, ate o '\0',
+	 * a partir disso, ele inclui espacos em cada posicao do char, ate completar o seu tamanho
+	 * @param *a ponteiro para o que sera escrito no arquivo
+	 * @param tamanho tamanho do campo que sera escrito no arquivo
+	 * @return retorna um ponteiro pra char com os espacoes ja incluidos
+	 */
 	char* insereEspaco(char *a, int tamanho)
 	{
 		char *aux = new char[tamanho];
@@ -50,6 +73,13 @@ public:
 		return aux;
 	}
 
+	/**
+	 * Metodo que insere novos dados no arquivo, caso a lista de disponivel esteja vazia,
+	 * o novo registro sera incluido no final, caso nao esteja, o registro sera inserido
+	 * na ultima posicao deletada, e assim por diante, como uma pilha
+	 * @return se a lista de disponivel estiver vazia, retorna o endereco do ultimo registro, caso contraio,
+	 * retorna o que esta no cabecalho
+	 */
 	int inserirArq()
 	{
 		//Tipo registro que auxilia com as variaveis para formar o vetor de char do registro
@@ -172,17 +202,21 @@ public:
 			int b = atoi(lerCabecalhoDisp());
 			f.seekp(b, ios::beg);
 			strcpy(endCampo, lerCampo(lerCabecalhoDisp()));
-			f.seekp(b, ios::beg);
+			//f.seekp(b, ios::beg);
 			f.write(registro, 242);	
-			int aa = atoi(endCampo);
-			escreverCabecalhoDisp(aa);
+			int end = atoi(endCampo);
+			escreverCabecalhoDisp(end);
 			return b;
 					
 		}
 		
 	}
 	
-	//metodo que retorna o ra de um registro, dada a sua posicao no arquivo de dados
+	/**
+	 * Metodo que retorna o RA de um registro, dada a sua posicao no arquivo de dados
+	 * @param posicao posicao passada para recuperar o RA
+	 * @return retorna o RA de um registro
+	 */
 	int getRA(int posicao)
 	{
 		f.seekg(posicao, ios::beg);
@@ -190,7 +224,10 @@ public:
 		return r.getRA();
 	}
 	
-	//imprime um registro dada a sua posicao
+	/**
+	 * Metodo que imprime um registro, dada a sua posicao
+	 * @param posicao posicao passada para impressao do registro
+	 */
 	void imprime(int posicao)
 	{
 		f.seekg(posicao, ios::beg);
@@ -207,13 +244,20 @@ public:
 		
 	}
 
-	//retorna posicao do arquivo
+	/**
+	 * Metodo que retorna a posicao do arquivo
+	 * @return retorna a posicao do arquivo
+	 */
 	long getPosicao()
 	{
 		return f.tellg();
 	}
 	
-	//metodo que converte inteiro para char
+	/**
+	 * Metodo que converte inteiro para char
+	 * @param endereco endereco que esta em char que sera convertido para int
+	 * @return retorna um ponteiro para char com o valor ja convertido
+	 */
 	char* intToChar(int endereco)
 	{
 		char *caracter = new char[100];
@@ -222,8 +266,11 @@ public:
 		return caracter;
 	}
 	
-	
 	//metodo que le o endereco disponivel no cabecalho
+	/**
+	 * Metodo que le o endereco disponivel no cabecalho para insercao de registro
+	 * @return retorna o char que contem o endereco do registro que esta na lista de disponiveis no cabecalho
+	 */
 	char* lerCabecalhoDisp()
 	{
 		char *buf = new char[100];
@@ -244,6 +291,10 @@ public:
 	}
 	
 	//metodo que escreve no cabecalho a posicao do ultimo registro excluido
+	/**
+	 * Metodo que escreve no cabecalho a posicao do ultimo registro excluido
+	 * @param endereco endereco endereco de um registro que ficou livre que sera escrito no cabecalho
+	 */
 	void escreverCabecalhoDisp(unsigned int endereco)
 	{
 		char end[200];
@@ -263,10 +314,16 @@ public:
 		f.write(end, sizeof(end));
 	}
 	
-	/* metodo que remove um registro do arquivo de dados
-	 * é verificado no metodo lerCabecalhoDisp() o ultimo registro excluido,
+	/**
+	 * Metodo que remove um registro do arquivo de dados,
+	 * e verificado no metodo lerCabecalhoDisp() o ultimo registro excluido,
 	 * ele le no cabecalho a ultima posicao removida e vai ate ela marcar a posicao atual a ser removida.
-	 * e assim sucessivamente. 
+	 * e assim sucessivamente.
+	 * @param endereco endereco do registro que sera removido
+	 * @return retorna verdadeiro se o registro foi removido (quando um endereco de um removido
+	 * e escrito no lugar de um registro, antes dele e colocado um espaco, por isso a condicao
+	 * de b(variavel auxiliar) ser diferente de espaco) ou false caso o registro ja tenha sido removido anteriormente,
+	 * ou seja, nao removeu nada na chamada do metodo atual
 	 */
 	bool removerRegistro(unsigned int endereco)
 	{
@@ -288,7 +345,6 @@ public:
 		
 		f.clear();
 		f.seekg(endereco, ios::beg);
-		//f >> b[0];
 		f.read(b,1);
 		
 		if(b[0] != ' ' )
@@ -306,19 +362,23 @@ public:
 			
 	}
 	
-	//metodo para leitura do campo que indica que um registro foi removido.
+	/**
+	 * Metodo para leitura do campo que indica que um registro foi removido
+	 * @param *endereco endereco do campo que sera lido
+	 * @return retorna o endereco do proximo registro disponivel
+	 */
 	char* lerCampo(char *endereco)
 	{
 		char *campo = new char[100];
 		int end;
 		end = atoi(endereco);
 		
+		//end+1 
 		f.seekg(end+1,ios::beg);
 		
 		f.read(campo,241);
 		
 		int i = 0;
-		//char *valor = new char[100];
 		
 		while(campo[i] != ' ')
 			++i;
@@ -330,27 +390,22 @@ public:
 		return campo;
 	}
 	
-	//conta quantos registros tem.
-	bool contaRegistro(int* ra, long* end)
+	/**
+	 * Metodo que le todos os registros e coloca na chave o RA e seu endereco
+	 * @param *ch chave que guardara o RA e seu endereco, sera retornado por referencia
+	 */
+	void lerRegistro(Chave* ch)
 	{
-		int count = 0;
 		
 		f.clear();
 		f.seekg(242,ios::beg);
 		
 		while(f.getline(reinterpret_cast<char *>(&r), 242))
-		{
-			//f.getline(reinterpret_cast<char *>(&r), 242);
-			
 			if(r.testaRegistro() == true)
 			{
-				count++;
-				*ra = r.getRA();
-				*end = getPosicao();
+				ch->setRA(r.getRA());
+				ch->setRegistro(getPosicao());
 			}
-		}
-		return true;
-		
 	}
 	
 };
