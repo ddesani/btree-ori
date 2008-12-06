@@ -16,6 +16,7 @@ using namespace std;
  */
 
 class No {
+	//TODO: remover esta linha
 	friend class BTree;
 private:
 	/**
