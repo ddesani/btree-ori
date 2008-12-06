@@ -1,91 +1,169 @@
 #ifndef NO_H_
 #define NO_H_
+
 using namespace std;
-// declaração da classe No
-class No
-{
+
+/**
+ * @brief Classe No
+ * Classe No da arvore. Esta contem as vareaveis de elementos da arvore, ponteiros para
+ * pais e filhos e endereco da posicao.
+ *
+ * @author Juliana Scaquetti, 298921
+ * @author Victor Hugo B. R. Santos, 298557
+ * @author Diego D. da Silva, 298700
+ * @author Thiago A. C. Chagas, 280615
+ * @version 5 de Dezembro de 2008
+ */
+
+class No {
+	friend class BTree;
 private:
-	int nChaves; // numero de chaves armazenadas na pagina
-	Chave *chave; // vetor de chaves do no 
-	No **filho; // vetor de ponteiros para os nos filhos    
-	No *pai; // ponteiro para o no pai
+	/**
+	 * Numero de chaves armazenadas na pagina.
+	 */
+	int nChaves;
 
 	/**
-	 * Endereco do Nodo
+	 * Vetor de chaves do no.
 	 */
-	long endereco;
+	Chave *chave;
 
+	/**
+	 * Endereco do Nodo.
+	 */
 	long _pos;
+
+	/**
+	 * Endereco do nodo pai.
+	 */
 	long _pai;
+
+	/**
+	 * Vetor de endereco dos filhos.
+	 */
 	long* _filho;
 
 public:
-	No()
-	{
+	/**
+	 * Construtor.
+	 */
+	No() {
 		nChaves = 0;
 		_pos = 0;
 		_pai = 0;
-
 	}
 
-	void iniciaNo(int n)
-	{
-		chave = new Chave[n];
-		_filho = new long[n+1];
+	/**
+	 * Destrutor
+	 */
+	~No() {
+		/*delete[] chave;
+		 delete[] filho;*/
 	}
 
-	void set_pai(long end)
-	{
+
+	/**
+	 * Metodo para setar o endereco do pai.
+	 * @param end endereco do pai.
+	 */
+	void set_pai(long end) {
 		_pai = end;
 	}
 
-	long get_pai()
-	{
+	/**
+	 * Metodoo que retorna o endereco do pai.
+	 * @return endereco do pai.
+	 */
+	long get_pai() {
 		return _pai;
 	}
 
-	void setRA(int ra, int indice)
-	{
+	/**
+	 * Metodo para setar o RA.
+	 * @param ra o valor do RA.
+	 * @param indice o indice do vetor de chaves.
+	 */
+	void setRA(int ra, int indice) {
 		chave[indice].setRA(ra);
 	}
 
-	int getRA(int indice)
-	{
+	/**
+	 * Metodo que retorna o RA.
+	 * @param indice indice do vetor de chaves.
+	 * @return o valor do RA.
+	 */
+	int getRA(int indice) {
 		return chave[indice].getRA();
 	}
 
-	void setRegistro(long endereco, int indice)
-	{
+	/**
+	 * Metodo que seta a posicao do Registro no arquivo de dados.
+	 * @param endereco endereco do Registro.
+	 * @param indice indice do vetor de chaves.
+	 */
+	void setRegistro(long endereco, int indice) {
 		chave[indice].setRegistro(endereco);
 	}
 
-	long getRegistro(int indice)
-	{
+	/**
+	 * Metodo que retorna o endereco do Registro no arquivo de dados.
+	 * @param indice indice do vetor de chaves.
+	 * @return o endereco do Registro.
+	 */
+	long getRegistro(int indice) {
 		return chave[indice].getRegistro();
 	}
 
-	void set_filho(long valor, int indice)
-	{
+	/**
+	 * Metodo que seta o ponteiro do filho.
+	 * @param valor o ponteiro do filho.
+	 */
+	void set_filho(long valor, int indice) {
 		_filho[indice] = valor;
 	}
 
-	long get_filho(int indice)
-	{
+	/**
+	 * Metodo que retorna o ponteiro do filho.
+	 * @param indice indice do vetor de ponteiros do filho.
+	 * @return o ponteiro do filho.
+	 */
+	long get_filho(int indice) {
 		return _filho[indice];
 	}
 
-	void set_pos(long posicao)
-	{
+	/**
+	 * Metodo que seta a posicao do nodo.
+	 * @param posicao posicao do nodo no arquivo.
+	 */
+	void set_pos(long posicao) {
 		_pos = posicao;
 	}
 
-	long get_pos()
-	{
+	/**
+	 * Metodo que retorna o endereco do nodo.
+	 * @return endereco do nodo.
+	 */
+	long get_pos() {
 		return _pos;
 	}
 
-	Chave getChave(int indice)
-	{
+
+	/**
+	 * Metodo que seta a chave segundo um indice de um vetor de chave.
+	 * @param ch chave que sera setada.
+	 * @param indice indice do vetor de chaves.
+	 */
+	void setChave(Chave ch, int indice) {
+		setRA(ch.getRA(), indice);
+		setRegistro(ch.getRegistro(), indice);
+	}
+
+	/**
+	 * Metodo que retorna o objeto chave segundo um indice de um vetor de chave.
+	 * @param indice indice do vetor de chave.
+	 * @return um objeto chave.
+	 */
+	Chave getChave(int indice) {
 		Chave aux;
 
 		aux.setRA(getRA(indice));
@@ -94,28 +172,31 @@ public:
 		return aux;
 	}
 
-	void	setChave(Chave ch, int indice)
-	{
-		setRA(ch.getRA(),indice);
-		setRegistro(ch.getRegistro(),indice);
-	}
-	
-	int getNChaves()
-	{
-		return nChaves;
-	}
-	void setNChaves(int valor)
-	{
+	/**
+	 * Metodo que seta o numero de chaves.
+	 * @param valor numero de chaves.
+	 */
+	void setNChaves(int valor) {
 		nChaves = valor;
 	}
 
-	~No()
-	{
-		/*delete[] chave;
-		 delete[] filho;*/
+	/**
+	 * Metodo que retorna o numero de chaves.
+	 * @return o numero de chaves.
+	 */
+	int getNChaves() {
+		return nChaves;
 	}
 
-	friend class BTree;
+	/**
+	 * Metodo para alocar o no.
+	 * @param n o tamanho dos vetores de chave e filho dependem desse.
+	 */
+	void iniciaNo(int n) {
+		chave = new Chave[n];
+		_filho = new long[n + 1];
+	}
+
 };
 
 #endif /*NO_H_*/
