@@ -10,8 +10,7 @@ class Btree
 public:
 	//fstream fB;
 	ArquivoB objArqB;
-	
-	
+
 	Chave* lista;
 	No** listaPtr;
 	No* raiz;
@@ -23,19 +22,14 @@ public:
 
 	Btree(int n)
 	{
-		
+		objArqB.setCabecalho(n+1);
 		objArqB.setFileName("btree.txt");
-		objArqB.open();
-		
+		//objArqB.open();
 		nChaves = n;
-		objArqB.setCabecalho(nChaves + 1); // recebe o numero de elementos +1 == ordem
-		
+		//objArqB.setCabecalho(nChaves + 1); // recebe o numero de elementos +1 == ordem
 		lista = new Chave[n+1]; //lista para a ordenacao das chaves do No
-		listaPtr = new No*[n+2]; //lista de ponteiros para os No`s filhos
 		_listaPtr = new long[n+2];
 		nosMinimos = n / 2; //quantidade minima de No`s
-		raiz = NULL;
-
 		_raiz = 0;
 
 	}
@@ -45,10 +39,10 @@ public:
 		//fB.open("btree.txt");
 		if (!objArqB.open())
 		{
-			int ordem = objArqB.getOrdemC();
+			int ordem = objArqB.getOrdem();
 
-			_raiz = objArqB.getEndRaizC(); //obtem o endereco da raiz no cabecalho
-			_endListaDispo = objArqB.getEndListaC();
+			_raiz = objArqB.getRaiz(); //obtem o endereco da raiz no cabecalho
+			_endListaDispo = objArqB.getListaDisp();
 
 			lista = new Chave[ordem]; //lista para a ordenacao das chaves do No
 			listaPtr = new No*[ordem +1]; //lista de ponteiros para os No`s filhos
@@ -61,8 +55,6 @@ public:
 
 	}
 
-	
-
 	~Btree()
 	{
 		//fB.close();
@@ -74,7 +66,8 @@ public:
 
 	void insere(Chave ch, No* no, No* _filho1, No* _filho2)
 	{
-		No _pai(nChaves);
+		No* _pai;
+		_pai->iniciaNo(nChaves);
 		No* novo;
 		int i, j;
 		bool sair = false;
@@ -84,26 +77,27 @@ public:
 		{
 			if (no->getNChaves() != 0)
 			{
-				no = new No(nChaves); //** cria a raiz
+				no = new No;
+				no->iniciaNo(nChaves);
 				no->setNChaves(0);
-				no->_pai = 0;
 				_raiz = no->get_pos();
 				//setEndRaizC(_raiz);
 				objArqB.setRaiz(_raiz);
-				
+
 			}
 			if (no->get_pai() != 0)
-				_pai = objArqB.carregaNo(no->get_pai(), nChaves);
+				_pai = objArqB.carregaNo(no->get_pos());
 
 			if (no->getNChaves() == nChaves)
 			{ // overflow
 				// no direito
-				novo = new No(nChaves);
+				novo = new No;
+				novo->iniciaNo(nChaves);
 				// Constroi lista ordenada
 				i = 0;
-				while (no->chave[i].valor < ch.valor && i < nChaves)
+				while (no->getRA(i) < ch.getRA() && i < nChaves)
 				{
-					lista[i] = no->chave[i];
+					lista[i] = no->getChave(i);
 					_listaPtr[i] = no->get_filho(i);
 					++i;
 				}
@@ -112,7 +106,7 @@ public:
 				_listaPtr[i+1] = _filho2->get_pos();
 				while (i < nChaves)
 				{
-					lista[i+1] = no->chave[i];
+					lista[i+1] = no->getChave(i);
 					_listaPtr[i+2] = no->get_filho(i+1);
 					i++;
 				}
@@ -121,7 +115,7 @@ public:
 				no->setNChaves(nChaves/2);
 				for (j = 0; j < no->getNChaves(); j++)
 				{
-					no->chave[j] = lista[j];
+					no->setChave(lista[j], j);
 					no->set_filho(_listaPtr[j], j);
 				}
 				no->set_filho(_listaPtr[no->getNChaves()], no->getNChaves());
@@ -130,23 +124,31 @@ public:
 				novo->setNChaves(nChaves - no->getNChaves());
 				for (j = 0; j < novo->getNChaves(); j++)
 				{
-					novo->chave[j] = lista[j+(nChaves/2)+1];
+					novo->setChave(lista[j+(nChaves/2)+1], j);
 					novo->set_filho(_listaPtr[j+(nChaves/2)+1], j);
 				}
 				novo->set_filho(_listaPtr[nChaves+1], novo->getNChaves());
 
 				for (j = 0; j <= no->getNChaves(); j++)
 					if (no->get_filho(j))
-						(no->filho[j])->set_pai(no->get_pos());
+					{
+						No* auxFilho = objArqB.carregaNo(no->get_filho(j));
+						auxFilho->set_pai(no->get_pos());
+						objArqB.escreveNo(auxFilho);
+					}
 
 				for (j = 0; j <= novo->getNChaves(); j++)
 					if (novo->get_filho(j))
-						(novo->filho[j])->set_pai(novo->get_pos());
+					{
+						No* auxFilho = objArqB.carregaNo(novo->get_filho(j));
+						auxFilho->set_pai(novo->get_pos());
+						objArqB.escreveNo(auxFilho);
+					}
 
 				ch = lista[nChaves/2];
-				*_filho1 = objArqB.carregaNo(no->get_pos(), nChaves);
-				*_filho2 = objArqB.carregaNo(novo->get_pos(), nChaves);
-				*no = objArqB.carregaNo(_pai.get_pos(), nChaves);
+				_filho1 = objArqB.carregaNo(no->get_pos());
+				_filho2 = objArqB.carregaNo(novo->get_pos());
+				no = objArqB.carregaNo(_pai->get_pos());
 			}
 			else //numero de Chaves != no->chaves
 			{
@@ -154,26 +156,26 @@ public:
 				i = 0;
 				if (no->getNChaves() > 0)
 				{
-					while (no->chave[i].valor < ch.valor && i
+					while (no->getRA(i) < ch.getRA() && i
 							< no->getNChaves())
 						i++;
 
 					for (j = no->getNChaves(); j > i; j--)
-						no->chave[j] = no->chave[j-1];
+						no->getChave(j) = no->getChave(j-1);
 
 					for (j = no->getNChaves()+1; j > i; j--)
-						no->_filho[j] = no->_filho[j-1];
+						no->set_filho(no->get_filho(j-1),j);
 				}
 				no->setNChaves(no->getNChaves()+1);
-				no->chave[i] = ch;
+				no->setChave(ch,i);
 				no->set_filho(_filho1->get_pos(), i);
 				no->set_filho(_filho2->get_pos(), i+1);
 
-				if (_filho1->nChaves != 0)
+				if (_filho1->getNChaves() != 0)
 					_filho1->set_pai(no->get_pos());
-				if (_filho2->nChaves !=0)
+				if (_filho2->getNChaves() !=0)
 					_filho2->set_pai(no->get_pos());
-				objArqB.escreveNo2(no);
+				objArqB.escreveNo(no);
 				sair = true;
 			}
 		} while (!sair);
@@ -186,69 +188,70 @@ public:
 		if (!no)
 			return;
 		for (i = 0; i < no->getNChaves()-1; i++)
-			cout << no->chave[i].valor << "-";
+			cout << no->getRA(i) << "-";
 		if (no->getNChaves())
-			cout << no->chave[i].valor << " [";
-		if (no->pai)
-			cout << (no->pai)->chave[0].valor;
+			cout << no->getRA(i) << " [";
+		if (no->get_pai())
+		{
+			No* auxPai = objArqB.carregaNo(no->get_pai());
+			cout << auxPai->getRA(0);
+		}
 		else
 			cout << "*";
 		cout << "]" << endl;
 		for (i = 0; i <= no->getNChaves(); i++)
-			imprimir(no->filho[i]);
+			imprimir(objArqB.carregaNo(no->get_filho(i)));
 	}
-
-
-	
 
 	long buscar(int ch)
 	{
-		No no = objArqB.carregaNo(objArqB.getEndRaizC(), nChaves);
+		No* no = objArqB.carregaNo(objArqB.getRaiz());
 
 		int i;
 
-		while (no.getNChaves() !=0)
+		while (no->getNChaves() !=0)
 		{
 			i =0;
-			while (i< no.getNChaves() && (no.chave[i].valor < ch))
+			while (i< no->getNChaves() && (no->getRA(i) < ch))
 				++i;
-			if (no.chave[i].valor == ch)
-				return no.chave[i].registro;
+			if (no->getRA(i) == ch)
+				return no->getRegistro(i);
 			else
-				no = objArqB.carregaNo(no._filho[i], nChaves);
+				no = objArqB.carregaNo(no->get_filho(i));
 		}
 		return 0; //tratar o retorno 0 caso nao ache o valor
 	}
 
-
 	bool inserir(Chave ch)
 	{
-		No no(nChaves);
-		No pai(nChaves);
+		No* no;
+		no->iniciaNo(nChaves);
+		No* pai;
+		pai->iniciaNo(nChaves);
 
 		int i;
 
 		// verificar se existe uma raiz para a arvore
-		if (objArqB.getEndRaizC() != 0)
-			pai = no = objArqB.carregaNo(objArqB.getEndRaizC(), nChaves);
-		while (no.getNChaves() !=0)
+		if (objArqB.getRaiz() != 0)
+			pai = no = objArqB.carregaNo(objArqB.getRaiz());
+		while (no->getNChaves() !=0)
 		{
 			pai = no;
 			i = 0;
-			while (i < no.getNChaves() && (no.chave[i].valor < ch.valor))
+			while (i < no->getNChaves() && (no->getRA(i) < ch.getRA()))
 				i++;
 			/* 
 			 * Caso a chave seja igual ao elemento do vetor e
 			 * o contador i ainda pertence ao intervalo de elementos
 			 * eh retornado false
 			 */
-			if (no.chave[i].valor == ch.valor && i < no.getNChaves())
+			if (no->getRA(i) == ch.getRA() && i < no->getNChaves())
 				return false; //chave existente
 			else
-					no = objArqB.carregaNo(no.get_filho(i), nChaves);
+				no = objArqB.carregaNo(no->get_filho(i));
 		}
 		no = pai;
-		insere(ch, &no, NULL, NULL); // parametros filho1 e filho2 sao null
+		insere(ch, no, NULL, NULL); // parametros filho1 e filho2 sao null
 		// para inicializar o novo no
 		return true;
 	}

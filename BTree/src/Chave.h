@@ -8,7 +8,7 @@ class Chave
 {
 private:
 	long registro; // posicao da chave no vetor de registros
-	int valor; // valor da chave
+	int RA; // RA da chave
 public:
 	
 	long getRegistro()
@@ -21,14 +21,14 @@ public:
 		registro = reg;
 	}
 	
-	int getValor()
+	int getRA()
 	{
-		return valor;
+		return RA;
 	}
 	
-	void setValor(int val)
+	void setRA(int val)
 	{
-		valor = val;
+		RA = val;
 	}
 	
 };
