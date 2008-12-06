@@ -61,6 +61,10 @@ public:
 			fB.close();
 	}
 
+	/**
+	 * Metodo para iniciar o no do arquivo com ordem n.
+	 * @return verdadeiro se alocou o no e false caso contrario.
+	 */
 	bool open() {
 
 		if (fB.is_open()) {
@@ -98,14 +102,26 @@ public:
 		fB.write(reinterpret_cast<char*> (&endereco), sizeof(endereco));
 	}
 
+	/**
+	 * Metodo para setar o nome do arquivo.
+	 * @param nome nome do arquivo.
+	 */
 	void setFileName(string nome) {
 		filename = nome;
 	}
 
+	/**
+	 * Metodo para pegar o nome do arquivo.
+	 * @return o nome do arquivo.
+	 */
 	string getFileName() {
 		return filename;
 	}
 
+	/**
+	 * Metodo que retorna o endereco da raiz.
+	 * @return endereco da raiz.
+	 */
 	long getRaiz() {
 		long raiz;
 
@@ -135,14 +151,26 @@ public:
 		return enderecoDisp;
 	}
 
+	/**
+	 * Metodo para setar o endereco do pai no nodo.
+	 * @param endereco endereco do nodo.
+	 */
 	void setPai(long endereco) {
 		nodo.set_pai(endereco);
 	}
 
+	/**
+	 * Metodo que pega o endereco do pai no nodo.
+	 * @return endereco do pai no nodo.
+	 */
 	long getPai() {
 		return nodo.get_pai();
 	}
 
+	/**
+	 * Metodo que retorna a ordem do nodo.
+	 * @return a ordem do nodo.
+	 */
 	int getOrdem() {
 		int ordem;
 
@@ -235,6 +263,11 @@ public:
 		fB.write(reinterpret_cast<char*>(&temp), sizeof(temp));
 	}
 
+	/**
+	 * Metodo que carrega o no na memoria.
+	 * @param posicao endereco do no no arquivo.
+	 * @return retorna um ponteiro para o no.
+	 */
 	No* carregaNo(long posicao) {
 		if (posicao != 0) {
 			int dadosI;
@@ -264,6 +297,11 @@ public:
 		return &nodo;
 	}
 
+	/**
+	 * Metodo que retorna um objeto da classe chave.
+	 * @param indice posicao do vetor.
+	 * @return retorna um objeto da classe chave.
+	 */
 	Chave getChave(int indice) {
 		Chave aux;
 
