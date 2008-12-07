@@ -65,7 +65,7 @@ public:
 
 	void insere(Chave ch, No* no, No* _filho1, No* _filho2)
 	{
-		
+
 		_filho1 = new No;
 		_filho2 = new No;
 		No* _pai;
@@ -78,18 +78,14 @@ public:
 		// inserir nova chave no no
 		do
 		{
-			if (no->getNChaves() != 0)
+			if (no->getNChaves() == 0)
 			{
 				no = new No;
 				no->iniciaNo(nChaves);
 				no->setNChaves(0);
-				_raiz = no->get_pos();
-				//setEndRaizC(_raiz);
-				objArqB.setRaiz(_raiz);
-
 			}
 			if (no->get_pai() != 0)
-				_pai = objArqB.carregaNo(no->get_pos());
+				*_pai = objArqB.carregaNo(no->get_pai());
 
 			if (no->getNChaves() == nChaves)
 			{ // overflow
@@ -116,6 +112,7 @@ public:
 				// Dividir nos
 				// No esquerdo
 				no->setNChaves(nChaves/2);
+				objArqB.escreveNo(no);
 				for (j = 0; j < no->getNChaves(); j++)
 				{
 					no->setChave(lista[j], j);
@@ -135,23 +132,26 @@ public:
 				for (j = 0; j <= no->getNChaves(); j++)
 					if (no->get_filho(j))
 					{
-						No* auxFilho = objArqB.carregaNo(no->get_filho(j));
-						auxFilho->set_pai(no->get_pos());
-						objArqB.escreveNo(auxFilho);
+						No auxFilho = objArqB.carregaNo(no->get_filho(j));
+						auxFilho.set_pai(no->get_pos());
+						objArqB.escreveNo(&auxFilho);
 					}
 
 				for (j = 0; j <= novo->getNChaves(); j++)
 					if (novo->get_filho(j))
 					{
-						No* auxFilho = objArqB.carregaNo(novo->get_filho(j));
-						auxFilho->set_pai(novo->get_pos());
-						objArqB.escreveNo(auxFilho);
+						No auxFilho = objArqB.carregaNo(novo->get_filho(j));
+						auxFilho.set_pai(novo->get_pos());
+						objArqB.escreveNo(&auxFilho);
 					}
 
 				ch = lista[nChaves/2];
-				_filho1 = objArqB.carregaNo(no->get_pos());
-				_filho2 = objArqB.carregaNo(novo->get_pos());
-				no = objArqB.carregaNo(_pai->get_pos());
+				*_filho1 = objArqB.carregaNo(no->get_pos());
+				_filho2 = novo;
+				objArqB.escreveNo(_filho2);
+				//*_filho2 = objArqB.carregaNo(novo->get_pos());
+				no = _pai;
+				//*no = objArqB.carregaNo(_pai->get_pos());
 			}
 			else //numero de Chaves != no->chaves
 			{
@@ -159,68 +159,79 @@ public:
 				i = 0;
 				if (no->getNChaves() > 0)
 				{
-					while (no->getRA(i) < ch.getRA() && i
-							< no->getNChaves())
+					while (no->getRA(i) < ch.getRA() && i < no->getNChaves())
 						i++;
 
 					for (j = no->getNChaves(); j > i; j--)
-						no->getChave(j) = no->getChave(j-1);
+						no->setChave(no->getChave(j-1), j);
 
 					for (j = no->getNChaves()+1; j > i; j--)
-						no->set_filho(no->get_filho(j-1),j);
+						no->set_filho(no->get_filho(j-1), j);
 				}
 				no->setNChaves(no->getNChaves()+1);
-				no->setChave(ch,i);
+				no->setChave(ch, i);
 				no->set_filho(_filho1->get_pos(), i);
 				no->set_filho(_filho2->get_pos(), i+1);
 
-				if (_filho1->getNChaves() != 0)
-					_filho1->set_pai(no->get_pos());
-				if (_filho2->getNChaves() !=0)
-					_filho2->set_pai(no->get_pos());
 				objArqB.escreveNo(no);
+				if (objArqB.getRaiz() != no->get_pai())
+				{
+					_raiz = no->get_pos();
+					objArqB.setRaiz(_raiz);
+				}
+				if (_filho1->getNChaves() != 0)
+				{
+					_filho1->set_pai(no->get_pos());
+					objArqB.escreveNo(_filho1);
+				}
+				if (_filho2->getNChaves() !=0)
+				{
+					_filho2->set_pai(no->get_pos());
+					objArqB.escreveNo(_filho2);
+				}
+
 				sair = true;
 			}
 		} while (!sair);
 	}
 
-	void imprimir(No* no)
+	void imprimir(No no)
 	{
 		int i;
 
-		if (!no)
+		if (no.getNChaves() == 0)
 			return;
-		for (i = 0; i < no->getNChaves()-1; i++)
-			cout << no->getRA(i) << "-";
-		if (no->getNChaves())
-			cout << no->getRA(i) << " [";
-		if (no->get_pai())
+		for (i = 0; i < no.getNChaves()-1; i++)
+			cout << no.getRA(i) << "-";
+		if (no.getNChaves())
+			cout << no.getRA(i) << " [";
+		if (no.get_pai())
 		{
-			No* auxPai = objArqB.carregaNo(no->get_pai());
-			cout << auxPai->getRA(0);
+			No auxPai = objArqB.carregaNo(no.get_pai());
+			cout << auxPai.getRA(0);
 		}
 		else
 			cout << "*";
 		cout << "]" << endl;
-		for (i = 0; i <= no->getNChaves(); i++)
-			imprimir(objArqB.carregaNo(no->get_filho(i)));
+		for (i = 0; i <= no.getNChaves(); i++)
+			imprimir(objArqB.carregaNo(no.get_filho(i)));
 	}
 
 	long buscar(int ch)
 	{
-		No* no = objArqB.carregaNo(objArqB.getRaiz());
+		No no = objArqB.carregaNo(objArqB.getRaiz());
 
 		int i;
 
-		while (no->getNChaves() !=0)
+		while (no.getNChaves() !=0)
 		{
 			i =0;
-			while (i< no->getNChaves() && (no->getRA(i) < ch))
+			while (i< no.getNChaves() && (no.getRA(i) < ch))
 				++i;
-			if (no->getRA(i) == ch)
-				return no->getRegistro(i);
+			if (no.getRA(i) == ch)
+				return no.getRegistro(i);
 			else
-				no = objArqB.carregaNo(no->get_filho(i));
+				no = objArqB.carregaNo(no.get_filho(i));
 		}
 		return 0; //tratar o retorno 0 caso nao ache o valor
 	}
@@ -238,7 +249,10 @@ public:
 
 		// verificar se existe uma raiz para a arvore
 		if (objArqB.getRaiz() != 0)
-			pai = no2 = objArqB.carregaNo(objArqB.getRaiz());
+		{
+			*pai = *no2 = objArqB.carregaNo(objArqB.getRaiz());
+			pai = no2;
+		}
 		while (no2->getNChaves() !=0)
 		{
 			pai = no2;
@@ -253,7 +267,12 @@ public:
 			if (no2->getRA(i) == ch.getRA() && i < no2->getNChaves())
 				return false; //chave existente
 			else
-				no2 = objArqB.carregaNo(no2->get_filho(i));
+			{
+				No* auxFilho;
+				auxFilho = new No;
+				*auxFilho = objArqB.carregaNo(no2->get_filho(i));
+				no2 = auxFilho;
+			}
 		}
 		no2 = pai;
 		insere(ch, no2, NULL, NULL); // parametros filho1 e filho2 sao null
@@ -264,7 +283,7 @@ public:
 	void mostrar()
 	{
 		cout << "Arvore B" << endl;
-		imprimir(raiz);
+		imprimir(*raiz);
 		cout << "##################" << endl;
 	}
 };
