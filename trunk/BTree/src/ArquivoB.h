@@ -19,7 +19,8 @@ using namespace std;
  * @author Thiago A. C. Chagas, 280615
  * @version 5 de Dezembro de 2008
  */
-class ArquivoB {
+class ArquivoB
+{
 private:
 	/**
 	 * Stream para controlar o arquivo.
@@ -36,11 +37,6 @@ private:
 	 */
 	int ordem;
 
-	/**
-	 * Nome do arquivo
-	 */
-	string filename;
-
 public:
 
 	/**
@@ -56,24 +52,27 @@ public:
 	 * Destrutor
 	 * Fecha o arquivo da arvore.
 	 */
-	~ArquivoB() {
+	~ArquivoB()
+	{
 		if (fB.is_open())
 			fB.close();
 	}
-
 	/**
 	 * Metodo para iniciar o no do arquivo com ordem n.
 	 * @return verdadeiro se alocou o no e false caso contrario.
 	 */
-	bool open() {
+	bool open()
+	{
 
-		if (fB.is_open()) {
+		if (fB.is_open())
+		{
 
 			this->ordem = this->getOrdem();
 			nodo.iniciaNo(this->ordem);
 
 			return true;
-		} else
+		}
+		else
 			return false;
 	}
 
@@ -81,9 +80,10 @@ public:
 	 * Metodo para construir o cabecalho do arquivo da arvore.
 	 * @param n ordem da arvore.
 	 */
-	void setCabecalho(int n) {
+	void setCabecalho(int n)
+	{
 		char identificador = 'I';
-		ordem = n + 1;
+		ordem = n;
 		nodo.iniciaNo(ordem);
 		long temp = 0;
 		fB.seekp(0, ios::beg);
@@ -97,32 +97,18 @@ public:
 	 * Metodo para mudar o valor da raiz.
 	 * @param endereco endereco que vai ser colocado no campo da raiz no cabecalho do arquivo da arvore.
 	 */
-	void setRaiz(long endereco) {
+	void setRaiz(long endereco)
+	{
 		fB.seekp(POSICAO_RAIZ, ios::beg);
-		fB.write(reinterpret_cast<char*> (&endereco), sizeof(endereco));
-	}
-
-	/**
-	 * Metodo para setar o nome do arquivo.
-	 * @param nome nome do arquivo.
-	 */
-	void setFileName(string nome) {
-		filename = nome;
-	}
-
-	/**
-	 * Metodo para pegar o nome do arquivo.
-	 * @return o nome do arquivo.
-	 */
-	string getFileName() {
-		return filename;
+		fB.write(reinterpret_cast<char*> (&endereco), 4);
 	}
 
 	/**
 	 * Metodo que retorna o endereco da raiz.
 	 * @return endereco da raiz.
 	 */
-	long getRaiz() {
+	long getRaiz()
+	{
 		long raiz;
 
 		fB.seekg(POSICAO_RAIZ, ios::beg);
@@ -135,7 +121,8 @@ public:
 	 * Metodo que muda o valor do endereco na lista de disponiveis no arquivo da arvore.
 	 * @param endereco endereco a ser gravado na lista de disponiveis do arquivo da arvore.
 	 */
-	void setListaDisp(long endereco) {
+	void setListaDisp(long endereco)
+	{
 		fB.seekp(POSICAO_DISPONIVEIS, ios::beg);
 		fB.write(reinterpret_cast<char*> (&endereco), sizeof(endereco));
 	}
@@ -144,7 +131,8 @@ public:
 	 * Metodo que retorna o endereco da lista de disponiveis do arquivo da arvore.
 	 * @return retorna o endereco que esta disponivel para gravar um nodo no arquivo da arvore.
 	 */
-	long getListaDisp() {
+	long getListaDisp()
+	{
 		long enderecoDisp;
 		fB.seekg(POSICAO_DISPONIVEIS, ios::beg);
 		fB.read(reinterpret_cast<char*> (&enderecoDisp), sizeof(enderecoDisp));
@@ -155,15 +143,16 @@ public:
 	 * Metodo para setar o endereco do pai no nodo.
 	 * @param endereco endereco do nodo.
 	 */
-	void setPai(long endereco) {
+	void setPai(long endereco)
+	{
 		nodo.set_pai(endereco);
 	}
-
 	/**
 	 * Metodo que pega o endereco do pai no nodo.
 	 * @return endereco do pai no nodo.
 	 */
-	long getPai() {
+	long getPai()
+	{
 		return nodo.get_pai();
 	}
 
@@ -171,7 +160,8 @@ public:
 	 * Metodo que retorna a ordem do nodo.
 	 * @return a ordem do nodo.
 	 */
-	int getOrdem() {
+	int getOrdem()
+	{
 		int ordem;
 
 		fB.seekg(POSICAO_ORDEM, ios::beg);
@@ -184,19 +174,22 @@ public:
 	 * Metodo que escreve o no carregado no arquivo da arvore.
 	 * @param nodo no carregado na memoria para ser escrito no arquivo da arvore.
 	 */
-	void escreveNo(No* nodo) {
+	void escreveNo(No* nodo)
+	{
 		int dadoI;
 		long dadoL;
 		int i;
 
-		if (nodo->get_pos() != 0) {
-			//para um nodo que nao é novo
+		if (nodo->get_pos() != 0)
+		{
+			//para um nodo que nao e novo
 			dadoI = nodo->getNChaves();
 			dadoL = nodo->get_pai();
 			fB.seekp(nodo->get_pos(), ios::beg);
 			fB.write(reinterpret_cast<char*> (&dadoI), 4);
 			fB.write(reinterpret_cast<char*> (&dadoL), 4);
-			for (i = 0; i < ordem; ++i) {
+			for (i = 0; i < ordem -1; ++i)
+			{
 				dadoI = nodo->getRA(i);
 				dadoL = nodo->getRegistro(i);
 				fB.write(reinterpret_cast<char*> (&dadoI), 4);
@@ -207,16 +200,32 @@ public:
 			}
 			dadoL = nodo->get_filho(i);
 			fB.write(reinterpret_cast<char*> (&dadoL), 4);
-		} else {
-			//se o nodo é novo
+		}
+		else
+		{
+			//se o nodo e novo
 			long temp = this->getListaDisp();
-			if (temp == 0) {
+			if (temp == 0)
+			{
+
 				dadoI = nodo->getNChaves();
 				dadoL = nodo->get_pai();
+				if (getRaiz() == 0)
+				{
+					fB.seekp(0, ios::end);
+					nodo->set_pos(fB.tellp());
+					setRaiz(fB.tellp()); //atualiza o endereco da arvore
+				}
 				fB.seekp(0, ios::end);
+				/*
+				 * Num momento em que raiz == 0
+				 * faremos 2x o set pos, ao inves de fazer 3 seekp
+				 */
+				nodo->set_pos(fB.tellp());
 				fB.write(reinterpret_cast<char*> (&dadoI), 4);
 				fB.write(reinterpret_cast<char*> (&dadoL), 4);
-				for (i = 0; i < ordem; ++i) {
+				for (i = 0; i < ordem -1; ++i)
+				{
 					dadoI = nodo->getRA(i);
 					dadoL = nodo->getRegistro(i);
 					fB.write(reinterpret_cast<char*> (&dadoI), 4);
@@ -227,7 +236,9 @@ public:
 				}
 				dadoL = nodo->get_filho(i);
 				fB.write(reinterpret_cast<char*> (&dadoL), 4);
-			} else {
+			}
+			else
+			{
 				dadoI = nodo->getNChaves();
 				dadoL = nodo->get_pai();
 				fB.seekg(temp, ios::beg);
@@ -237,7 +248,8 @@ public:
 				fB.seekp(temp, ios::beg);
 				fB.write(reinterpret_cast<char*> (&dadoI), 4);
 				fB.write(reinterpret_cast<char*> (&dadoL), 4);
-				for (i = 0; i < ordem; ++i) {
+				for (i = 0; i < ordem-1; ++i)
+				{
 					dadoI = nodo->getRA(i);
 					dadoL = nodo->getRegistro(i);
 					fB.write(reinterpret_cast<char*> (&dadoI), 4);
@@ -250,59 +262,83 @@ public:
 				fB.write(reinterpret_cast<char*> (&dadoL), 4);
 			}
 		}
+		fB.flush();
 	}
 
 	/**
 	 * Metodo que remove o nodo do arquivo de dados da arvore.
 	 * @param posicao endereco do nodo no arquivo da arvore.
 	 */
-	void removerNo(long posicao){
+	void removerNo(long posicao)
+	{
 		long temp = this->getListaDisp();
 		this->setListaDisp(posicao);
 		fB.seekp(posicao, ios::beg);
 		fB.write(reinterpret_cast<char*>(&temp), sizeof(temp));
 	}
-
 	/**
 	 * Metodo que carrega o no na memoria.
 	 * @param posicao endereco do no no arquivo.
 	 * @return retorna um ponteiro para o no.
 	 */
-	No* carregaNo(long posicao) {
-		if (posicao != 0) {
+	No carregaNo(long posicao)
+	{
+		int i;
+		No* nodo = new No;
+		nodo->iniciaNo(ordem-1);
+		if (posicao != 0)
+		{
 			int dadosI;
 			long dadosL;
 
-			nodo.set_pos(posicao);
-
+			nodo->set_pos(posicao);
+			fB.clear();
 			fB.seekg(posicao, ios::beg);
 
 			fB.read(reinterpret_cast<char *> (&dadosI), 4);
-			nodo.setNChaves(dadosI);
+			nodo->setNChaves(dadosI);
 
 			fB.read(reinterpret_cast<char *> (&dadosL), 4);
-			nodo.set_pai(dadosL);
+			nodo->set_pai(dadosL);
 
-			for (int i = 0; i < ordem; ++i) {
+			for (i = 0; i < ordem-1; ++i)
+			{
 				fB.read(reinterpret_cast<char*> (&dadosI), 4);
-				nodo.setRA(dadosI, i);
-			}
-
-			for (int i = 0; i < ordem; ++i) {
+				nodo->setRA(dadosI, i);
 				fB.read(reinterpret_cast<char*> (&dadosL), 4);
-				nodo.setRegistro(dadosL, i);
+				nodo->setRegistro(dadosL, i);
+				fB.read(reinterpret_cast<char*> (&dadosL), 4);
+				nodo->set_filho(dadosL, i);
 			}
+			fB.read(reinterpret_cast<char*> (&dadosL), 4);
+			nodo->set_filho(dadosL, i);
+		}
+		else
+		{
+			Chave ch;
+			ch.setRA(0);
+			ch.setRegistro(0);
+			nodo->set_pai(nodo->get_pos());
+			nodo->setNChaves(0);
+			for (i = 0; i < ordem -1; ++i)
+			{
+				nodo->setChave(ch, i);
+				nodo->set_filho(0, i);
+			}
+			nodo->set_filho(0, i);
+
+			nodo->set_pos(0);
 		}
 
-		return &nodo;
+		return *nodo;
 	}
-
 	/**
 	 * Metodo que retorna um objeto da classe chave.
 	 * @param indice posicao do vetor.
 	 * @return retorna um objeto da classe chave.
 	 */
-	Chave getChave(int indice) {
+	Chave getChave(int indice)
+	{
 		Chave aux;
 
 		aux.setRA(nodo.getRA(indice));
