@@ -248,23 +248,6 @@ public:
 
 	}
 
-	void imprime(int RA)
-	{
-		//long posicao = objArvore.buscar(RA);
-		long posicao = 0; //retirar
-		if (posicao != 0)
-		{
-			f.seekg(posicao, ios::beg);
-			f.getline(reinterpret_cast<char *>(&r), 242);
-
-			r.ajusta();
-			r.imprime();
-		}
-		else
-			cout << "Nao existe este RA." << endl;
-
-	}
-
 	/**
 	 * Metodo que retorna a posicao do arquivo
 	 * @return retorna a posicao do arquivo
@@ -345,7 +328,7 @@ public:
 	 * de b(variavel auxiliar) ser diferente de espaco) ou false caso o registro ja tenha sido removido anteriormente,
 	 * ou seja, nao removeu nada na chamada do metodo atual
 	 */
-	bool removerRegistro(unsigned int endereco)
+	bool removerRegistro(long endereco)
 	{
 		char b[1];
 		char* aux = lerCabecalhoDisp();
