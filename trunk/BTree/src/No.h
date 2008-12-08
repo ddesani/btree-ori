@@ -60,7 +60,6 @@ public:
 		 delete[] filho;*/
 	}
 
-
 	/**
 	 * Metodo para setar o endereco do pai.
 	 * @param end endereco do pai.
@@ -146,7 +145,6 @@ public:
 		return _pos;
 	}
 
-
 	/**
 	 * Metodo que seta a chave segundo um indice de um vetor de chave.
 	 * @param ch chave que sera setada.
@@ -194,6 +192,22 @@ public:
 	void iniciaNo(int n) {
 		chave = new Chave[n];
 		_filho = new long[n + 1];
+	}
+
+	/**
+	 * Metodo para comparar dois nos.
+	 * @param comp o no que sera comparado.
+	 */
+	bool operator==(No &comp) {
+		if (this->getNChaves() == comp.getNChaves()) {
+			for (int i = 0; i < this->getNChaves(); ++i)
+				if (this->getRA(i) != comp.getRA(i) && this->getRegistro(i) != comp.getRegistro(i))
+					return false;
+
+			return true;
+		}
+
+		return false;
 	}
 
 };
