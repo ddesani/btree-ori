@@ -7,10 +7,26 @@ using namespace std;
 class Arquivo
 {
 	private:
+		/**
+		 * Variavel que guarda o nome do arquivo
+		 */
 		string nome;
+
+		/**
+		 * Arquivo de dados
+		 */
 		fstream f;
+
+		/**
+		 * Variavel que guarda o registro que sera inserido no arquivo
+		 */
 		Registro r;
-		
+
+		/**
+		 * instancia da classe ArvoreB
+		 */
+		//Btree objArvore;
+
 		/**
 		 * Metodo que insere espacos vazios no fim de cada variavel char,
 		 * a partir do tamanho da variavel, ele conta quantos caracteres tem o char, ate o '\0',
@@ -37,15 +53,21 @@ class Arquivo
 		
 	public:
 		
+		
 		/**
 		 * Construtor, abre o arquivo de dados
 		 * @param filename string que contem o nome do arquivo
 		 */
-		Arquivo(string filename)
+		Arquivo()
 		{
-			nome = filename;
+			//objArvore.open(elementos);
+			
+			nome = "registro.txt";
 			f.open(nome.c_str());
+			
+			//lerRegistro(); //monta a arvore
 		}
+		
 		
 		/**
 		 * Destrutor, fecha o arquivo de dados
@@ -54,6 +76,7 @@ class Arquivo
 		{
 			f.close();
 		}
+		
 		
 		/**
 		 * Metodo que insere novos dados no arquivo, caso a lista de disponivel esteja vazia,
@@ -122,7 +145,7 @@ class Arquivo
 			strcat(registro, " ");
 			//UF
 			cout << "UF: ";
-			cin.getline(reg.UF, sizeof(reg.UF));;
+			cin.getline(reg.UF, sizeof(reg.UF));
 			aux = insereEspaco(reg.UF, reg.tamanhoUF);
 			strcat(registro, aux);
 			strcat(registro, " ");
@@ -162,10 +185,10 @@ class Arquivo
 			aux = insereEspaco(reg.curso, reg.tamanhoCurso);
 			strcat(registro, aux);
 			strcat(registro, " ");
-			//Ano Ingresso 
+			//Ano Ingresso
 			cout << "Ano Ingresso: ";
-			cin.getline(reg.anoIngresso, sizeof(reg.anoIngresso)+1);
-			aux = insereEspaco(reg.anoIngresso, reg.tamanhoAnoIngresso+1);
+			cin >> reg.anoIngresso;
+			aux = insereEspaco(reg.anoIngresso, reg.tamanhoAnoIngresso + 1);
 			strcat(registro, aux);
 			
 			
@@ -214,7 +237,7 @@ class Arquivo
 		 * Metodo que imprime um registro, dada a sua posicao
 		 * @param posicao posicao passada para impressao do registro
 		 */
-		void imprime(int posicao)
+		void imprime(long posicao)
 		{
 			f.seekg(posicao, ios::beg);
 			f.getline(reinterpret_cast<char *>(&r), 242);
@@ -226,6 +249,23 @@ class Arquivo
 			}
 			else
 				cout << "Nao ha registro nesta posicao." << endl;
+			
+		}
+		
+		void imprime(int RA)
+		{
+			//long posicao = objArvore.buscar(RA);
+			long posicao = 0; //retirar
+			if (posicao != 0)
+			{
+				f.seekg(posicao, ios::beg);
+				f.getline(reinterpret_cast<char *>(&r), 242);
+				
+				r.ajusta();
+				r.imprime();
+			}
+			else
+				cout << "Nao existe este RA." << endl;
 			
 		}
 		
@@ -264,6 +304,7 @@ class Arquivo
 			char temp;
 			int i = 0;
 			
+			f.clear();
 			f.seekg(40, ios::beg);
 			f.read(&temp, 1);
 			do
@@ -274,6 +315,8 @@ class Arquivo
 			buf[i] = '\0';
 			
 			return buf;
+			
+			
 		}
 		
 		
@@ -381,18 +424,30 @@ class Arquivo
 		 * Metodo que le todos os registros e coloca na chave o RA e seu endereco
 		 * @param *ch chave que guardara o RA e seu endereco, sera retornado por referencia
 		 */
-		void lerRegistro(Chave* ch)
+		Chave lerRegistro()
 		{
+			Chave ch;
 			
 			f.clear();
-			f.seekg(242, ios::beg);
 			
-			while (f.getline(reinterpret_cast<char *>(&r), 242))
-				if (r.testaRegistro() == true)
-				{
-					ch->setRA(r.getRA());
-					ch->setRegistro(getPosicao());
-				}
+			if (f.getline(reinterpret_cast<char *>(&r), 242))
+			{
+				ch.setRA(r.getRA());
+				ch.setRegistro(getPosicao());
+			}
+			return ch;
 		}
 		
+		int conta()
+		{
+			f.clear();
+			f.seekg(0,ios::end);
+			int total = f.tellg();
+			
+			int tamanho = total/242;
+			
+			f.seekg(242, ios::beg);
+			
+			return tamanho-1;
+		}
 };
