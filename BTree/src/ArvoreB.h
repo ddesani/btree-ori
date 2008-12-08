@@ -83,9 +83,18 @@ public:
 				no = new No;
 				no->iniciaNo(nChaves);
 				no->setNChaves(0);
+				objArqB.escreveNo(no);
+				_raiz = no->get_pos();
+				objArqB.setRaiz(_raiz);
 			}
-			if (no->get_pai() != 0)
-				*_pai = objArqB.carregaNo(no->get_pai());
+
+			//para que o no nao seja alterado
+			//fazemos o pai apontar para outro 
+			//endereco de memoria
+			No* auxPai = new No;
+			auxPai->iniciaNo(nChaves);
+			*auxPai = objArqB.carregaNo(no->get_pai());
+			_pai = auxPai;
 
 			if (no->getNChaves() == nChaves)
 			{ // overflow
@@ -111,15 +120,15 @@ public:
 				}
 				// Dividir nos
 				// No esquerdo
-				no->setNChaves(nChaves/2);
-				objArqB.escreveNo(no);
-				for (j = 0; j < no->getNChaves(); j++)
+				
+				for (j = 0; j < (nChaves/2); j++)
 				{
 					no->setChave(lista[j], j);
 					no->set_filho(_listaPtr[j], j);
 				}
+				no->setNChaves(nChaves/2);
 				no->set_filho(_listaPtr[no->getNChaves()], no->getNChaves());
-
+				objArqB.escreveNo(no);
 				// No direito
 				novo->setNChaves(nChaves - no->getNChaves());
 				for (j = 0; j < novo->getNChaves(); j++)
@@ -128,6 +137,8 @@ public:
 					novo->set_filho(_listaPtr[j+(nChaves/2)+1], j);
 				}
 				novo->set_filho(_listaPtr[nChaves+1], novo->getNChaves());
+				//teste
+				objArqB.escreveNo(novo);
 
 				for (j = 0; j <= no->getNChaves(); j++)
 					if (no->get_filho(j))
@@ -148,6 +159,9 @@ public:
 				ch = lista[nChaves/2];
 				*_filho1 = objArqB.carregaNo(no->get_pos());
 				_filho2 = novo;
+				if (_pai->get_pos() != 0)
+					_filho2->set_pai(_pai->get_pos());
+				//_filho2->set_pai(_pai->get_pos());
 				objArqB.escreveNo(_filho2);
 				//*_filho2 = objArqB.carregaNo(novo->get_pos());
 				no = _pai;
@@ -155,8 +169,10 @@ public:
 			}
 			else //numero de Chaves != no->chaves
 			{
+
 				// Insere nova chave em seu lugar
 				i = 0;
+
 				if (no->getNChaves() > 0)
 				{
 					while (no->getRA(i) < ch.getRA() && i < no->getNChaves())
@@ -168,17 +184,25 @@ public:
 					for (j = no->getNChaves()+1; j > i; j--)
 						no->set_filho(no->get_filho(j-1), j);
 				}
+				//inserir o tratamento para a raiz
+				//i = 1
+				//NO
+				//	nChaves = 1
+				//	_pos = 109
+				//	_pai = 0
+				// _raiz = 109
+				//
 				no->setNChaves(no->getNChaves()+1);
 				no->setChave(ch, i);
 				no->set_filho(_filho1->get_pos(), i);
 				no->set_filho(_filho2->get_pos(), i+1);
 
 				objArqB.escreveNo(no);
-				if (objArqB.getRaiz() != no->get_pai())
+				/*if (objArqB.getRaiz() != no->get_pai())
 				{
 					_raiz = no->get_pos();
 					objArqB.setRaiz(_raiz);
-				}
+				}*/
 				if (_filho1->getNChaves() != 0)
 				{
 					_filho1->set_pai(no->get_pos());
@@ -191,8 +215,10 @@ public:
 				}
 
 				sair = true;
+				
 			}
 		} while (!sair);
+		
 	}
 
 	void imprimir(No no)
