@@ -3,54 +3,38 @@
 
 using namespace std;
 
-//typedef No *pontno;
+/**
+ * @brief Classe Registro
+ * Classe para manipular a arvore-B
+ *
+ * @author Juliana Scaquetti, 298921
+ * @author Victor Hugo B. R. Santos, 298557
+ * @author Diego D. da Silva, 298700
+ * @author Thiago A. C. Chagas, 280615
+ * @version 6 de Dezembro de 2008
+ */
 
 class Btree
 {
 public:
-	//fstream fB;
+	/**
+	 * Objeto que manipulara o arquivo da arvore-B
+	 */
 	ArquivoB objArqB;
 
+	/**
+	 * Vetor de Chaves para mante-las ordenadas
+	 */
 	Chave* lista;
-	No** listaPtr;
-	No* raiz;
-	int nChaves, nosMinimos;
+
+	int nChaves;
 
 	long _raiz;
 	long* _listaPtr;
 	long _endListaDispo;
 
-	Btree(int n)
-	{
-		objArqB.setCabecalho(n+1);
-		//objArqB.open();
-		nChaves = n;
-		//objArqB.setCabecalho(nChaves + 1); // recebe o numero de elementos +1 == ordem
-		lista = new Chave[n+1]; //lista para a ordenacao das chaves do No
-		_listaPtr = new long[n+2];
-		nosMinimos = n / 2; //quantidade minima de No`s
-		_raiz = 0;
-
-	}
 	Btree()
 	{
-
-		//fB.open("btree.txt");
-		if (!objArqB.open())
-		{
-			int ordem = objArqB.getOrdem();
-
-			_raiz = objArqB.getRaiz(); //obtem o endereco da raiz no cabecalho
-			_endListaDispo = objArqB.getListaDisp();
-
-			lista = new Chave[ordem]; //lista para a ordenacao das chaves do No
-			listaPtr = new No*[ordem +1]; //lista de ponteiros para os No`s filhos
-
-			nChaves = ordem -1;
-			nosMinimos = (ordem -1) / 2; //quantidade minima de No`s
-			raiz = NULL;
-			_raiz = 0;
-		}
 
 	}
 
@@ -58,8 +42,19 @@ public:
 	{
 		//fB.close();
 		delete[] lista;
-		delete[] listaPtr;
 		delete[] _listaPtr;
+
+	}
+
+	void open(int n)
+	{
+		objArqB.setCabecalho(n+1);
+		//objArqB.open();
+		nChaves = n;
+		//objArqB.setCabecalho(nChaves + 1); // recebe o numero de elementos +1 == ordem
+		lista = new Chave[n+1]; //lista para a ordenacao das chaves do No
+		_listaPtr = new long[n+2];
+		_raiz = 0;
 
 	}
 
@@ -120,7 +115,7 @@ public:
 				}
 				// Dividir nos
 				// No esquerdo
-				
+
 				for (j = 0; j < (nChaves/2); j++)
 				{
 					no->setChave(lista[j], j);
@@ -199,10 +194,10 @@ public:
 
 				objArqB.escreveNo(no);
 				/*if (objArqB.getRaiz() != no->get_pai())
-				{
-					_raiz = no->get_pos();
-					objArqB.setRaiz(_raiz);
-				}*/
+				 {
+				 _raiz = no->get_pos();
+				 objArqB.setRaiz(_raiz);
+				 }*/
 				if (_filho1->getNChaves() != 0)
 				{
 					_filho1->set_pai(no->get_pos());
@@ -215,10 +210,10 @@ public:
 				}
 
 				sair = true;
-				
+
 			}
 		} while (!sair);
-		
+
 	}
 
 	void imprimir(No no)
@@ -309,7 +304,7 @@ public:
 	void mostrar()
 	{
 		cout << "Arvore B" << endl;
-		imprimir(*raiz);
+		//		imprimir(*raiz);
 		cout << "##################" << endl;
 	}
 };
