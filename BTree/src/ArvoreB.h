@@ -256,8 +256,8 @@ public:
 	{
 		int n;
 
+		//Obtem a ordem do cabecalho
 		n = objArqB.getOrdem();
-		cout << n << endl;
 
 		//inicializa a variavel ordem de objArqB
 		objArqB.setOrdem(n);
