@@ -94,6 +94,26 @@ public:
 	}
 
 	/**
+	 * Metodo que seta a variavel local ordem.
+	 * @param ord valor para alterar a ordem
+	 */
+	void setOrdem(int ord)
+	{
+		ordem = ord;
+	}
+
+	/**
+	 * Metodo que retorna o tamanho do arquivo da arvore-B
+	 * return tamanho do arquivo
+	 */
+	int tamanho()
+	{
+		fB.clear();
+		fB.seekg(0, ios::end);
+		return fB.tellg();
+	}
+
+	/**
 	 * Metodo para mudar o valor da raiz.
 	 * @param endereco endereco que vai ser colocado no campo da raiz no cabecalho do arquivo da arvore.
 	 */
